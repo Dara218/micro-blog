@@ -8,8 +8,8 @@
           Share your thoughts, connect with others, and discover amazing content in our micro-blogging community.
         </p>
         <div class="cta-buttons">
-          <a href="#" class="btn btn-primary">Login</a>
-          <a href="#" class="btn btn-secondary">Register</a>
+          <RouterLink class="btn btn-primary" to="/login">Login</RouterLink>
+          <RouterLink class="btn btn-secondary" to="/register">Register</RouterLink>
         </div>
       </div>
     </section>
@@ -51,6 +51,8 @@
 </template>
 
 <script setup>
+import { RouterLink } from 'vue-router';
+
 // Component logic can go here
 </script>
 
