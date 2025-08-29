@@ -1,0 +1,26 @@
+// Import variables first
+@import 'variables';
+
+// Import mixins and utilities
+@import 'mixins';
+
+// Import reusable components
+@import 'components';
+
+// Import page-specific styles
+@import 'pages/landing';
+@import 'pages/login';
+
+// Global styles can go here
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

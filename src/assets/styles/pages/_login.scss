@@ -1,0 +1,78 @@
+// Login page specific styles
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  @include flex-center;
+  
+  .login-container {
+    background-color: $white;
+    border-radius: 1rem;
+    padding: $spacing-xl;
+    width: 100%;
+    max-width: 400px;
+    @include card-shadow;
+    
+    @include mobile {
+      margin: $spacing-sm;
+      padding: $spacing-lg;
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: $spacing-xl;
+      
+      .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin-bottom: $spacing-xs;
+      }
+      
+      .login-subtitle {
+        color: $text-light;
+        font-size: 1rem;
+      }
+    }
+    
+    .login-form {
+      .form-group {
+        margin-bottom: $spacing-md;
+      }
+      
+      .form-actions {
+        margin-top: $spacing-lg;
+        
+        .btn-login {
+          @extend .btn;
+          @extend .btn-primary;
+          @extend .btn-full;
+          margin-bottom: $spacing-sm;
+        }
+        
+        .btn-forgot {
+          @extend .btn;
+          @extend .btn-outline;
+          @extend .btn-full;
+          font-size: 0.875rem;
+        }
+      }
+    }
+    
+    .login-footer {
+      text-align: center;
+      margin-top: $spacing-lg;
+      padding-top: $spacing-lg;
+      border-top: 1px solid #e5e7eb;
+      
+      .signup-link {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: 600;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
