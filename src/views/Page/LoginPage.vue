@@ -16,6 +16,7 @@
             v-model="form.email"
             autocomplete="on"
           />
+          <p class="text-red-500" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</p>
         </div>
         
         <div class="form-group">
@@ -27,37 +28,66 @@
             v-model="form.password"
             autocomplete="off"
           />
+          <p class="text-red-500" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</p>
         </div>
         
         <div class="form-actions">
-          <button type="submit" class="btn-login" :disabled="isDisabled">Sign In</button>
+          <button type="submit" class="btn-login" :disabled="isSubmitBtnDisabled">Sign In</button>
           <button type="button" class="btn-forgot">Forgot Password?</button>
         </div>
       </form>
 
       <div class="login-footer">
-        <p>Don't have an account? <a href="#" class="signup-link">Sign up</a></p>
+        <p>Don't have an account? <RouterLink to="/register" class="signup-link">Sign up</RouterLink></p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { reactive, ref } from 'vue';
   import axios from 'axios';
-  import router from '@/router';
+  import { requiredField } from '@/composables/validationRules';
+  import useVuelidate from '@vuelidate/core';
+  import {
+    computed,
+    reactive,
+    ref,
+  } from 'vue';
+  import {
+    RouterLink,
+    useRouter,
+  } from 'vue-router';
 
-  const isDisabled = ref(false);
+  const router = useRouter();
+  const isSubmitBtnDisabled = ref(false);
   const form = reactive({
     email: '',
     password: '',
   })
-  
+
+  // The validation rules
+  const rules = computed(() => {
+    return {
+      email: { required: requiredField('Email Address') },
+      password: { required: requiredField('Password') },
+    };
+  });
+
+  const v$ = useVuelidate(rules, form);
+
   const login = async () => {
+    const isFormValidated = await v$.value.$validate();
+    
+    console.log(isFormValidated);
+    
+
+    if (!isFormValidated) return;
+
     try {
-      isDisabled.value = true;
+      isSubmitBtnDisabled.value = true;
       // await axios.post('/api/login', { ...form })
 
+      // Note: Temporary
       router.push('/home');
     } catch (error) {
       console.error(error.response?.data);
