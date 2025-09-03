@@ -140,8 +140,8 @@
     lastName: '',
     userName: '',
     email: '',
-    password: 'Qwerty123@',
-    confirmPassword: 'Qwerty123@',
+    password: '',
+    confirmPassword: '',
     isPolicyAgree: false,
   });
 

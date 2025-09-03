@@ -75,6 +75,9 @@
 
   const v$ = useVuelidate(rules, form);
 
+  /**
+   * Process login user.
+   */
   const login = async () => {
     const isFormValidated = await v$.value.$validate();
     
