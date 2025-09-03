@@ -46,7 +46,7 @@
 
 <script setup>
   import axios from 'axios';
-  import { requiredField } from '@/composables/validationRules';
+  import { requiredField } from '@/composables/useValidationRules';
   import useVuelidate from '@vuelidate/core';
   import {
     computed,

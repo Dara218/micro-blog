@@ -131,7 +131,7 @@
     sameAsField,
     passwordField,
     checkboxField,
-  } from '@/composables/validationRules';
+  } from '@/composables/useValidationRules';
 
   const isSubmitBtnDisabled = ref(false);
 

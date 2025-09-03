@@ -422,7 +422,7 @@
     reactive,
     ref,
   } from 'vue';
-  import { requiredField } from '@/composables/validationRules';
+  import { requiredField } from '@/composables/useValidationRules';
   import CreatePostModal from '@/components/CreatePostModal.vue';
 
   const form = reactive({
