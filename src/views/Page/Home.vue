@@ -23,7 +23,7 @@
         </div>
         <!-- Create post button -->
         <div class="header-right">
-          <button class="btn-create-post">
+          <button class="btn-create-post" @click="toggleCreatePostModal">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -410,13 +410,20 @@
       </div>
     </main>
   </div>
+
+  <CreatePostModal v-if="isCreatePostModalOpen" @close-modal="toggleCreatePostModal"/>
 </template>
 
 <script setup>
   import axios from 'axios';
   import useVuelidate from '@vuelidate/core';
-  import { computed, reactive } from 'vue';
+  import {
+    computed,
+    reactive,
+    ref,
+  } from 'vue';
   import { requiredField } from '@/composables/validationRules';
+  import CreatePostModal from '@/components/CreatePostModal.vue';
 
   const form = reactive({
     content: '',
@@ -425,10 +432,17 @@
     isAllowComments: true,
     isAllowShares: true,
   });
+  const isCreatePostModalOpen = ref(false);
 
+  // Checks if post submit button is disabled
   const isPostButtonDisabled = computed(() => {
-    return !form.content.trim() && form.images.length === 0 && form.video.length === 0;
+    return !form.content.trim()
+      && form.images.length === 0
+      && form.video.length === 0;
   });
+
+  // Toggles the create post modal
+  const toggleCreatePostModal = () => isCreatePostModalOpen.value =! isCreatePostModalOpen.value;
 
   // The validation rules
   const rules = computed(() => {
@@ -497,6 +511,6 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import '@/assets/styles/main.scss';
 </style>
