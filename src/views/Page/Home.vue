@@ -31,7 +31,7 @@
           </button>
           <div class="user-menu">
             <div class="user-avatar">
-              <img src="https://via.placeholder.com/40x40/3b82f6/ffffff?text=U" alt="User" />
+              <img src="#" alt="User" />
             </div>
           </div>
         </div>
@@ -46,7 +46,7 @@
           <div class="sidebar-content">
             <div class="user-profile-card">
               <div class="profile-avatar">
-                <img src="https://via.placeholder.com/80x80/3b82f6/ffffff?text=U" alt="User" />
+                <img src="#" alt="User" />
               </div>
               <h3 class="profile-name">John Doe</h3>
               <p class="profile-username">@johndoe</p>
@@ -98,11 +98,11 @@
         <!-- Feed -->
         <section class="feed">
           <!-- Create Post Card -->
-          <form class="create-post-card" @submit.prevent="createPost">
+          <form class="create-post-card" @submit.prevent="onSubmit">
             <div class="form flex-col">
               <div class="create-post-header">
                 <div class="user-avatar-small">
-                  <img src="https://via.placeholder.com/40x40/3b82f6/ffffff?text=U" alt="User" />
+                  <img src="#" alt="User" />
                 </div>
                 <div class="w-full flex-1">
                   <textarea 
@@ -179,7 +179,7 @@
                   <span>Allow shares</span>
                 </label>
               </div>
-              <button type="submit" class="btn-post" :disabled="isPostButtonDisabled">
+              <button type="submit" class="btn-post" :disabled="isPostButtonDisabled || isSubmitting">
                 Post
               </button>
             </div>
@@ -192,7 +192,7 @@
               <div class="post-header">
                 <div class="post-author">
                   <div class="author-avatar">
-                    <img src="https://via.placeholder.com/40x40/10b981/ffffff?text=J" alt="Jane Smith" />
+                    <img src="#" alt="Jane Smith" />
                   </div>
                   <div class="author-info">
                     <h4 class="author-name">Jane Smith</h4>
@@ -212,7 +212,7 @@
                   What's the best productivity tip you've learned recently?
                 </p>
                 <div class="post-image">
-                  <img src="https://via.placeholder.com/500x300/f3f4f6/6b7280?text=Book+Photo" alt="Book" />
+                  <img src="#" alt="Book" />
                 </div>
               </div>
               
@@ -243,7 +243,7 @@
               <div class="post-header">
                 <div class="post-author">
                   <div class="author-avatar">
-                    <img src="https://via.placeholder.com/40x40/8b5cf6/ffffff?text=M" alt="Mike Johnson" />
+                    <img src="#" alt="Mike Johnson" />
                   </div>
                   <div class="author-info">
                     <h4 class="author-name">Mike Johnson</h4>
@@ -263,7 +263,7 @@
                   #hiking #nature #sunset #photography
                 </p>
                 <div class="post-image">
-                  <img src="https://via.placeholder.com/500x400/fbbf24/ffffff?text=Sunset+View" alt="Sunset" />
+                  <img src="#" alt="Sunset" />
                 </div>
               </div>
               
@@ -294,7 +294,7 @@
               <div class="post-header">
                 <div class="post-author">
                   <div class="author-avatar">
-                    <img src="https://via.placeholder.com/40x40/ef4444/ffffff?text=S" alt="Sarah Wilson" />
+                    <img src="#" alt="Sarah Wilson" />
                   </div>
                   <div class="author-info">
                     <h4 class="author-name">Sarah Wilson</h4>
@@ -375,7 +375,7 @@
               <div class="suggested-list">
                 <div class="suggested-user">
                   <div class="user-avatar-small">
-                    <img src="https://via.placeholder.com/32x32/06b6d4/ffffff?text=A" alt="Alex" />
+                    <img src="#" alt="Alex" />
                   </div>
                   <div class="user-info">
                     <h4 class="user-name">Alex Chen</h4>
@@ -385,7 +385,7 @@
                 </div>
                 <div class="suggested-user">
                   <div class="user-avatar-small">
-                    <img src="https://via.placeholder.com/32x32/84cc16/ffffff?text=E" alt="Emma" />
+                    <img src="#" alt="Emma" />
                   </div>
                   <div class="user-info">
                     <h4 class="user-name">Emma Davis</h4>
@@ -395,7 +395,7 @@
                 </div>
                 <div class="suggested-user">
                   <div class="user-avatar-small">
-                    <img src="https://via.placeholder.com/32x32/f59e0b/ffffff?text=R" alt="Ryan" />
+                    <img src="#" alt="Ryan" />
                   </div>
                   <div class="user-info">
                     <h4 class="user-name">Ryan Miller</h4>
@@ -415,98 +415,31 @@
 </template>
 
 <script setup>
-  import axios from 'axios';
-  import useVuelidate from '@vuelidate/core';
-  import {
-    computed,
-    reactive,
-    ref,
-  } from 'vue';
-  import { requiredField } from '@/composables/useValidationRules';
+  import { ref } from 'vue';
+  import { useCreatePost } from '@/composables/useCreatePost';
   import CreatePostModal from '@/components/CreatePostModal.vue';
 
-  const form = reactive({
-    content: '',
-    images: [],
-    video: [],
-    isAllowComments: true,
-    isAllowShares: true,
-  });
+  const {
+    form,
+    v$,
+    isSubmitting,
+    isPostButtonDisabled,
+    onImageChange,
+    onVideoChange,
+    createPost,
+  } = useCreatePost();
+
   const isCreatePostModalOpen = ref(false);
 
-  // Checks if post submit button is disabled
-  const isPostButtonDisabled = computed(() => {
-    return !form.content.trim()
-      && form.images.length === 0
-      && form.video.length === 0;
-  });
-
-  // Toggles the create post modal
   const toggleCreatePostModal = () => isCreatePostModalOpen.value =! isCreatePostModalOpen.value;
 
-  // The validation rules
-  const rules = computed(() => {
-    return {
-      content: { required: requiredField('Content') },
-    };
-  });
+  const onSubmit = async () => {
+    const isSuccess = await createPost();
 
-  const v$ = useVuelidate(rules, form);
-
-  /**
-   * Handles the image input field.
-   *
-   * @param event
-   */
-  const onImageChange = (event) => {
-    form.images = Array.from(event.target.files || []);
-
-    // Retains the image when user cancels the image selection
-    event.target.value = '';
-  };
-
-  /**
-   * Handles the video input field.
-   *
-   * @param event
-   */
-  const onVideoChange = (event) => {
-    form.video = Array.from(event.target.files || []);
-
-    // Retains the video when user cancels the video selection
-    event.target.value = '';
-  };
-
-  /**
-   * Process the creation of post.
-   */
-  const createPost = async () => {
-    // Call the validation
-    const isFormValidated = await v$.value.$validate();
-
-    // log a plain snapshot so you can see values clearly
-    console.log('form:', {
-      content: form.content,
-      images: form.images.map((file) => file.name),
-      video: form.video.map((file) => file.name),
-      comments: form.isAllowComments,
-      shares: form.isAllowShares,
-    });
-
-    if (!isFormValidated || isPostButtonDisabled.value) return;
-
-    try {
-      const formData = new FormData();
-
-      formData.append('content', form.content);
-      form.images.forEach(file => formData.append('images[]', file));
-      form.video.forEach(file => formData.append('videos[]', file));
-      formData.append('allow_comments', String(form.isAllowComments));
-      formData.append('allow_shares', String(form.isAllowShares));
-
-      // axios.post('/api/post/store', formData);
-    } catch (error) {
-      console.error(error.response?.data);
+    if (isSuccess) {
+      // resetForm();
+      // showToast('Posted!');
+      isSubmitting.value = false;
     }
   };
 </script>
