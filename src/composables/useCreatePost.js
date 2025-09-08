@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { requiredField } from '@/composables/useValidationRules';
-import { buildPostFormData, createPostRequest } from '@/services/postService';
+import { buildPostFormData, createPostRequest } from '@/services/user/post/postService';
 
 /**
  * Composable for creating a new post with content, images, and videos.

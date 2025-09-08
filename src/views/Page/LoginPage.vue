@@ -6,7 +6,7 @@
         <p class="login-subtitle">Sign in to your Micro Blog account</p>
       </div>
       
-      <form class="login-form" @submit.prevent="login">
+      <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label class="form-label">Email</label>
           <input
@@ -45,9 +45,6 @@
 </template>
 
 <script setup>
-  import axios from 'axios';
-  import { requiredField } from '@/composables/useValidationRules';
-  import useVuelidate from '@vuelidate/core';
   import {
     computed,
     reactive,
@@ -57,6 +54,9 @@
     RouterLink,
     useRouter,
   } from 'vue-router';
+  import { login } from '@/services/user/authentication/authUserService';
+  import { requiredField } from '@/composables/useValidationRules';
+  import useVuelidate from '@vuelidate/core';
 
   const router = useRouter();
   const isSubmitBtnDisabled = ref(false);
@@ -78,20 +78,17 @@
   /**
    * Process login user.
    */
-  const login = async () => {
+  const handleLogin = async () => {
     const isFormValidated = await v$.value.$validate();
-    
-    console.log(isFormValidated);
-    
 
     if (!isFormValidated) return;
 
     try {
       isSubmitBtnDisabled.value = true;
-      // await axios.post('/api/login', { ...form })
+      const response = await login({ ...form });
+      console.log(response);
 
-      // Note: Temporary
-      router.push('/home');
+      // router.push('/home');
     } catch (error) {
       console.error(error.response?.data);
     }
