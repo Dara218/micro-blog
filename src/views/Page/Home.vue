@@ -31,7 +31,7 @@
           </button>
           <div class="user-menu">
             <div class="user-avatar">
-              <img src="#" alt="User" />
+              <img :src="auth.user.avatar_url" :alt="auth.user.avatar_url" />
             </div>
           </div>
         </div>
