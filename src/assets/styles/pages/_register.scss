@@ -10,10 +10,10 @@
     padding: $spacing-xl;
     width: 100%;
     max-width: 500px;
+    margin: $spacing-sm;
     @include card-shadow;
     
     @include mobile {
-      margin: $spacing-sm;
       padding: $spacing-lg;
     }
     

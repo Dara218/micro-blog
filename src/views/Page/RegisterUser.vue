@@ -131,7 +131,7 @@
     sameAsField,
     passwordField,
     checkboxField,
-  } from '@/composables/validationRules';
+  } from '@/composables/useValidationRules';
 
   const isSubmitBtnDisabled = ref(false);
 
@@ -140,8 +140,8 @@
     lastName: '',
     userName: '',
     email: '',
-    password: 'Qwerty123@',
-    confirmPassword: 'Qwerty123@',
+    password: '',
+    confirmPassword: '',
     isPolicyAgree: false,
   });
 

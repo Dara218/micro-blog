@@ -51,9 +51,9 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
+  import { RouterLink } from 'vue-router';
 
-// Component logic can go here
+  // Component logic can go here
 </script>
 
 <style lang="scss" scoped>

@@ -1,0 +1,716 @@
+// Home page specific styles
+.home-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  
+  // Header Styles
+  .home-header {
+    background-color: $white;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 $spacing-md;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      
+      @include mobile {
+        padding: 0 $spacing-sm;
+      }
+      
+      .header-left {
+        .logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: $primary-color;
+          margin: 0;
+        }
+      }
+      
+      .header-center {
+        flex: 1;
+        max-width: 400px;
+        margin: 0 $spacing-lg;
+        
+        @include mobile {
+          margin: 0 $spacing-sm;
+          max-width: 200px;
+        }
+        
+        .search-bar {
+          position: relative;
+          display: flex;
+          align-items: center;
+          
+          .search-input {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 2rem;
+            background-color: #f9fafb;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            
+            &:focus {
+              outline: none;
+              border-color: $primary-color;
+              background-color: $white;
+              box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+            }
+            
+            &::placeholder {
+              color: #9ca3af;
+            }
+          }
+          
+          .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: color 0.2s ease;
+            
+            &:hover {
+              color: $primary-color;
+            }
+          }
+        }
+      }
+      
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        
+        .btn-create-post {
+          @extend .btn;
+          @extend .btn-primary;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+          
+          @include mobile {
+            padding: 0.5rem;
+            span {
+              display: none;
+            }
+          }
+        }
+        
+        .user-menu {
+          .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+            
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Main Content
+  .home-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $spacing-lg $spacing-md;
+    
+    @include mobile {
+      padding: $spacing-sm;
+    }
+    
+    .main-container {
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      gap: $spacing-lg;
+      
+      @include tablet {
+        grid-template-columns: 240px 1fr 280px;
+        gap: $spacing-md;
+      }
+      
+      @include mobile {
+        grid-template-columns: 1fr;
+        gap: $spacing-sm;
+      }
+    }
+  }
+  
+  // Sidebar Styles
+  .sidebar {
+    @include mobile {
+      order: 2;
+    }
+    
+    .sidebar-content {
+      position: sticky;
+      top: 80px;
+      
+      @include mobile {
+        position: static;
+        display: flex;
+        gap: $spacing-sm;
+        overflow-x: auto;
+        padding-bottom: $spacing-sm;
+      }
+    }
+    
+    .user-profile-card {
+      background-color: $white;
+      border-radius: 1rem;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-lg;
+      @include card-shadow;
+      
+      @include mobile {
+        flex-shrink: 0;
+        width: 200px;
+        margin-bottom: 0;
+        padding: $spacing-md;
+      }
+      
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto $spacing-sm;
+        
+        @include mobile {
+          width: 60px;
+          height: 60px;
+        }
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      
+      .profile-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $text-dark;
+        text-align: center;
+        margin-bottom: 0.25rem;
+        
+        @include mobile {
+          font-size: 1rem;
+        }
+      }
+      
+      .profile-username {
+        color: $text-light;
+        text-align: center;
+        margin-bottom: $spacing-md;
+        font-size: 0.875rem;
+      }
+      
+      .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        
+        .stat {
+          text-align: center;
+          
+          .stat-number {
+            display: block;
+            font-weight: 600;
+            color: $text-dark;
+            font-size: 1.125rem;
+          }
+          
+          .stat-label {
+            font-size: 0.75rem;
+            color: $text-light;
+          }
+        }
+      }
+    }
+    
+    .sidebar-nav {
+      background-color: $white;
+      border-radius: 1rem;
+      padding: $spacing-sm;
+      @include card-shadow;
+      
+      @include mobile {
+        display: flex;
+        gap: $spacing-xs;
+        padding: $spacing-xs;
+        overflow-x: auto;
+      }
+      
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-sm;
+        border-radius: 0.5rem;
+        color: $text-light;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        margin-bottom: 0.25rem;
+        
+        @include mobile {
+          flex-shrink: 0;
+          margin-bottom: 0;
+          padding: $spacing-xs $spacing-sm;
+          white-space: nowrap;
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        &:hover {
+          background-color: #f3f4f6;
+          color: $text-dark;
+        }
+        
+        &.active {
+          background-color: rgba($primary-color, 0.1);
+          color: $primary-color;
+          font-weight: 600;
+        }
+        
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+  
+  // Feed Styles
+  .feed {
+    min-width: 0; // Prevents grid overflow
+    
+    .create-post-card {
+      background-color: $white;
+      border-radius: 1rem;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-lg;
+      @include card-shadow;
+      
+      .create-post-header {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-md;
+        
+        .user-avatar-small {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        .create-post-input {
+          flex: 1;
+          padding: $spacing-sm $spacing-md;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.75rem;
+          background-color: #f9fafb;
+          color: $text-dark;
+          font-size: 0.875rem;
+          line-height: 1.5;
+          resize: none;
+          min-height: 3rem;
+          max-height: 8rem;
+          transition: all 0.2s ease;
+          
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+            background-color: $white;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+          }
+          
+          &::placeholder {
+            color: $text-light;
+          }
+        }
+      }
+      
+
+      
+      .create-post-actions {
+        display: flex;
+        gap: $spacing-sm;
+        flex-wrap: wrap;
+        
+        .action-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: $spacing-sm;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+          background-color: $white;
+          color: $text-light;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 0.875rem;
+          min-width: 0;
+          
+          &:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+            color: $text-dark;
+          }
+          
+          @include mobile {
+            flex: none;
+            min-width: 80px;
+          }
+        }
+        
+        .file-input-label {
+          position: relative;
+          overflow: hidden;
+          
+          .file-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+          }
+        }
+      }
+      
+      .create-post-footer {
+        margin-top: $spacing-md;
+        padding-top: $spacing-md;
+        border-top: 1px solid #f3f4f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .post-options {
+          display: flex;
+          gap: $spacing-md;
+          
+          .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: $text-light;
+            cursor: pointer;
+            
+            input[type="checkbox"] {
+              width: auto;
+              margin: 0;
+            }
+            
+            &:hover {
+              color: $text-dark;
+            }
+          }
+        }
+        
+        .btn-post {
+          @extend .btn;
+          @extend .btn-primary;
+          padding: 0.5rem 1.5rem;
+          font-size: 0.875rem;
+          
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+    
+    .posts-feed {
+      .post-card {
+        background-color: $white;
+        border-radius: 1rem;
+        padding: $spacing-lg;
+        margin-bottom: $spacing-lg;
+        @include card-shadow;
+        
+        .post-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: $spacing-md;
+          
+          .post-author {
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
+            
+            .author-avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              overflow: hidden;
+              
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+            
+            .author-info {
+              .author-name {
+                font-weight: 600;
+                color: $text-dark;
+                margin: 0 0 0.125rem 0;
+                font-size: 0.875rem;
+              }
+              
+              .post-meta {
+                color: $text-light;
+                font-size: 0.75rem;
+                margin: 0;
+              }
+            }
+          }
+          
+          .post-menu {
+            background: none;
+            border: none;
+            color: $text-light;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+            
+            &:hover {
+              background-color: #f3f4f6;
+              color: $text-dark;
+            }
+          }
+        }
+        
+        .post-content {
+          margin-bottom: $spacing-md;
+          
+          .post-text {
+            color: $text-dark;
+            line-height: 1.6;
+            margin-bottom: $spacing-sm;
+            font-size: 0.875rem;
+          }
+          
+          .post-image {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            
+            img {
+              width: 100%;
+              height: auto;
+              display: block;
+            }
+          }
+        }
+        
+        .post-actions {
+          display: flex;
+          gap: $spacing-sm;
+          padding-top: $spacing-sm;
+          border-top: 1px solid #f3f4f6;
+          
+          .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: $spacing-sm;
+            border: none;
+            background: none;
+            color: $text-light;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            
+            &:hover {
+              background-color: #f9fafb;
+              color: $text-dark;
+            }
+            
+            svg {
+              width: 18px;
+              height: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Right Sidebar Styles
+  .right-sidebar {
+    @include mobile {
+      order: 3;
+    }
+    
+    .sidebar-content {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-lg;
+      
+      @include mobile {
+        position: static;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: $spacing-sm;
+      }
+    }
+    
+    .trending-card,
+    .suggested-card {
+      background-color: $white;
+      border-radius: 1rem;
+      padding: $spacing-lg;
+      @include card-shadow;
+      
+      @include mobile {
+        flex-shrink: 0;
+        width: 280px;
+        padding: $spacing-md;
+      }
+      
+      .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: $text-dark;
+        margin-bottom: $spacing-md;
+      }
+    }
+    
+    .trending-list {
+      .trending-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $spacing-sm 0;
+        border-bottom: 1px solid #f3f4f6;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .trending-tag {
+          color: $primary-color;
+          font-weight: 500;
+          font-size: 0.875rem;
+        }
+        
+        .trending-count {
+          color: $text-light;
+          font-size: 0.75rem;
+        }
+      }
+    }
+    
+    .suggested-list {
+      .suggested-user {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-sm 0;
+        border-bottom: 1px solid #f3f4f6;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .user-avatar-small {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          overflow: hidden;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        .user-info {
+          flex: 1;
+          
+          .user-name {
+            font-weight: 500;
+            color: $text-dark;
+            margin: 0 0 0.125rem 0;
+            font-size: 0.875rem;
+          }
+          
+          .user-username {
+            color: $text-light;
+            font-size: 0.75rem;
+            margin: 0;
+          }
+        }
+        
+        .follow-btn {
+          @extend .btn;
+          @extend .btn-outline;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+}
+
+// Allow reuse of feed styles inside modal by neutralizing page-level layout
+.home-page.modal-scope {
+  min-height: auto;
+  background-color: transparent;
+
+  .home-main,
+  .main-container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .feed .create-post-card {
+    margin-bottom: 0;
+  }
+}

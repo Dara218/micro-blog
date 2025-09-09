@@ -6,7 +6,7 @@
         <p class="login-subtitle">Sign in to your Micro Blog account</p>
       </div>
       
-      <form class="login-form" @submit.prevent="login">
+      <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label class="form-label">Email</label>
           <input
@@ -34,6 +34,7 @@
         <div class="form-actions">
           <button type="submit" class="btn-login" :disabled="isSubmitBtnDisabled">Sign In</button>
           <button type="button" class="btn-forgot">Forgot Password?</button>
+          <div class="text-red-500 text-center mt-3" v-if="auth.error">{{ auth.error }}</div>
         </div>
       </form>
 
@@ -45,9 +46,6 @@
 </template>
 
 <script setup>
-  import axios from 'axios';
-  import { requiredField } from '@/composables/validationRules';
-  import useVuelidate from '@vuelidate/core';
   import {
     computed,
     reactive,
@@ -57,6 +55,9 @@
     RouterLink,
     useRouter,
   } from 'vue-router';
+  import { useAuthStore } from '@/stores/useAuthStore';
+  import { requiredField } from '@/composables/useValidationRules';
+  import useVuelidate from '@vuelidate/core';
 
   const router = useRouter();
   const isSubmitBtnDisabled = ref(false);
@@ -64,6 +65,7 @@
     email: '',
     password: '',
   })
+  const auth = useAuthStore();
 
   // The validation rules
   const rules = computed(() => {
@@ -75,21 +77,35 @@
 
   const v$ = useVuelidate(rules, form);
 
-  const login = async () => {
+  /**
+   * Process login user.
+   */
+  const handleLogin = async () => {
     const isFormValidated = await v$.value.$validate();
-    
-    console.log(isFormValidated);
-    
 
     if (!isFormValidated) return;
 
     try {
       isSubmitBtnDisabled.value = true;
-      // await axios.post('/api/login', { ...form })
 
-      // Note: Temporary
+      // Login the user
+      await auth.login({ ...form });
+
+      // If login details is incorrect
+      if (auth.error) {
+        isSubmitBtnDisabled.value = false;
+
+        form.password = '';
+
+        v$.value.password.$reset();
+
+        return;
+      }
+
       router.push('/home');
     } catch (error) {
+      isSubmitBtnDisabled.value = false;
+
       console.error(error.response?.data);
     }
   };
