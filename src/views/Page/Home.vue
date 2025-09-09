@@ -415,9 +415,10 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { useCreatePost } from '@/composables/useCreatePost';
   import CreatePostModal from '@/components/CreatePostModal.vue';
+  import { useAuthStore } from '@/stores/useAuthStore';
 
   const {
     form,
@@ -428,6 +429,14 @@
     onVideoChange,
     createPost,
   } = useCreatePost();
+
+  const auth = useAuthStore();
+
+  onMounted(async () => {
+    await auth.getAuthenticatedUser();
+
+    console.log(auth.user);
+  });
 
   const isCreatePostModalOpen = ref(false);
 

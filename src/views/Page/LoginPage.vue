@@ -34,6 +34,7 @@
         <div class="form-actions">
           <button type="submit" class="btn-login" :disabled="isSubmitBtnDisabled">Sign In</button>
           <button type="button" class="btn-forgot">Forgot Password?</button>
+          <div class="text-red-500 text-center mt-3" v-if="auth.error">{{ auth.error }}</div>
         </div>
       </form>
 
@@ -54,7 +55,7 @@
     RouterLink,
     useRouter,
   } from 'vue-router';
-  import { login } from '@/services/user/authentication/authUserService';
+  import { useAuthStore } from '@/stores/useAuthStore';
   import { requiredField } from '@/composables/useValidationRules';
   import useVuelidate from '@vuelidate/core';
 
@@ -64,6 +65,7 @@
     email: '',
     password: '',
   })
+  const auth = useAuthStore();
 
   // The validation rules
   const rules = computed(() => {
@@ -85,11 +87,25 @@
 
     try {
       isSubmitBtnDisabled.value = true;
-      const response = await login({ ...form });
-      console.log(response);
 
-      // router.push('/home');
+      // Login the user
+      await auth.login({ ...form });
+
+      // If login details is incorrect
+      if (auth.error) {
+        isSubmitBtnDisabled.value = false;
+
+        form.password = '';
+
+        v$.value.password.$reset();
+
+        return;
+      }
+
+      router.push('/home');
     } catch (error) {
+      isSubmitBtnDisabled.value = false;
+
       console.error(error.response?.data);
     }
   };
