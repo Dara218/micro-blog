@@ -46,26 +46,25 @@
 </template>
 
 <script setup>
-  import {
-    computed,
-    reactive,
-    ref,
-  } from 'vue';
-  import {
-    RouterLink,
-    useRouter,
-  } from 'vue-router';
-  import { useAuthStore } from '@/stores/useAuthStore';
-  import { requiredField } from '@/composables/useValidationRules';
+  // Vue core & Router
+  import { computed, reactive, ref } from 'vue';
+  import { RouterLink, useRouter } from 'vue-router';
+
+  // Validation
   import useVuelidate from '@vuelidate/core';
+  import { requiredField } from '@/composables/useValidationRules';
+
+  // Store
+  import { useAuthStore } from '@/stores/useAuthStore';
 
   const router = useRouter();
+  const auth = useAuthStore();
+
   const isSubmitBtnDisabled = ref(false);
   const form = reactive({
     email: '',
     password: '',
   })
-  const auth = useAuthStore();
 
   // The validation rules
   const rules = computed(() => {
@@ -74,15 +73,15 @@
       password: { required: requiredField('Password') },
     };
   });
-
   const v$ = useVuelidate(rules, form);
 
   /**
    * Process login user.
+   * 
+   * @returns {void}
    */
   const handleLogin = async () => {
     const isFormValidated = await v$.value.$validate();
-
     if (!isFormValidated) return;
 
     try {
@@ -91,26 +90,13 @@
       // Login the user
       await auth.login({ ...form });
 
-      // If login details is incorrect
-      if (auth.error) {
-        isSubmitBtnDisabled.value = false;
-
-        form.password = '';
-
-        v$.value.password.$reset();
-
-        return;
-      }
-
-      router.push('/home');
+      // If login details is correct
+      if (!auth.error) router.push('/home');
     } catch (error) {
       isSubmitBtnDisabled.value = false;
+      form.password = '';
 
-      console.error(error.response?.data);
+      v$.value.password.$reset();
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  @import '@/assets/styles/main.scss';
-</style>

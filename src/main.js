@@ -12,9 +12,10 @@ const pinia = createPinia();
 
 // Use Pinia first
 app.use(pinia);
-app.use(router);
 
 const auth = useAuthStore();
-auth.getAuthenticatedUser();
+await auth.getAuthenticatedUser();
+
+app.use(router);
 
 app.mount('#app');

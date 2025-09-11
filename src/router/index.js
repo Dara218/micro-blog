@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/useAuthStore'
 import Home from '@/views/Page/Home.vue'
 import LandingPage from '@/views/Page/LandingPage.vue'
 import LoginPage from '@/views/Page/LoginPage.vue'
@@ -11,23 +12,44 @@ const router = createRouter({
       path: '/',
       name: 'landing-page',
       component: LandingPage,
+      meta: { requiresGuest: true },
     },
     {
       path: '/login',
       name: 'login',
       component: LoginPage,
+      meta: { requiresGuest: true },
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterUser,
+      meta: { requiresGuest: true },
     },
     {
       path: '/home',
       name: 'home',
       component: Home,
+      meta: { requiresAuth: true },
     },
   ],
-})
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  const auth = useAuthStore();
+
+  // If route requires auth BUT user is NOT authenticated
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return next({ path: '/login', query: { redirect: to.fullPath } });
+  }
+
+  // If route requires guest BUT user IS authenticated
+  if (to.meta.requiresGuest && auth.isAuthenticated) {
+    return next({ path: '/home' });
+  }
+
+  // If no redirect needed, continue
+  next();
+});
+
+export default router;
