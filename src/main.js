@@ -7,19 +7,15 @@ import router from './router';
 import { createPinia } from 'pinia';
 import { useAuthStore } from './stores/useAuthStore';
 
-async function bootstrap() {
-  const app = createApp(App);
-  const pinia = createPinia();
+const app = createApp(App);
+const pinia = createPinia();
 
-  // Use Pinia first
-  app.use(pinia);
+// Use Pinia first
+app.use(pinia);
 
-  const auth = useAuthStore();
-  await auth.getAuthenticatedUser();
+const auth = useAuthStore();
+await auth.getAuthenticatedUser();
 
-  app.use(router);
+app.use(router);
 
-  app.mount('#app');
-}
-
-bootstrap();
+app.mount('#app');

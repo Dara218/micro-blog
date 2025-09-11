@@ -52,7 +52,8 @@ export const useAuthStore = defineStore('auth', {
         return response;
       } catch (error) {
         this.error = error.response?.data?.message || 'Invalid login details';
-        console.error(error.response?.data);
+
+        throw error;
       }
     },
   }

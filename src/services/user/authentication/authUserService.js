@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from '@/constants';
 import { api } from '@/services/common/http';
 
 /**
@@ -13,15 +14,15 @@ export const getCsrfCookie = () => api.get('/api/sanctum/csrf-cookie');
  * 
  * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
  */
-export const login = (credentials) => api.post('/api/user/authenticate', credentials);
+export const login = (credentials) => api.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
 
 /**
  * Fetches the currently authenticated user based on the existing session cookie.
  * Useful on app startup to restore user state after a page refresh.
  *
- * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise containing the authenticated user
+ * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
  */
-export const getAuthUser = () => api.get('/api/user/get-auth');
+export const getAuthUser = () => api.get(API_ENDPOINTS.AUTH.GET_AUTH);
 
 /**
  * Logs out the current user.
@@ -29,4 +30,13 @@ export const getAuthUser = () => api.get('/api/user/get-auth');
  *
  * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
  */
-export const logout = () => api.post('/api/user/logout');
+export const logout = () => api.post(API_ENDPOINTS.AUTH.LOGOUT);
+
+/**
+ * This function retrieves user statistics based on the provided user ID.
+ * 
+ * @param id - unique identifier of the user for whom you want to retrieve statistics.
+ * 
+ * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
+ */
+export const getUserStats = (id) => api.get(API_ENDPOINTS.AUTH.GET_USER_STATS(id));

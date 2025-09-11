@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue';
-import useVuelidate from '@vuelidate/core';
 import { requiredField } from '@/composables/useValidationRules';
-import { buildPostFormData, createPostRequest } from '@/services/user/post/postService';
+import { buildPostFormData, createPost } from '@/services/post/postService';
+import useVuelidate from '@vuelidate/core';
 
 /**
  * Composable for creating a new post with content, images, and videos.
@@ -19,7 +19,6 @@ import { buildPostFormData, createPostRequest } from '@/services/user/post/postS
  */
 export const useCreatePost = () => {
   const isSubmitting = ref(false);
-
   const form = reactive({
     content: '',
     images: [],
@@ -28,6 +27,14 @@ export const useCreatePost = () => {
     isAllowShares: true,
   });
 
+  // The validation rules
+  const rules = computed(() => {
+    return {
+      content: { required: requiredField('Content') },
+    };
+  });
+  const v$ = useVuelidate(rules, form);
+
   // Checks if post submit button is disabled
   const isPostButtonDisabled = computed(() => {
     return !form.content.trim()
@@ -35,19 +42,10 @@ export const useCreatePost = () => {
       && form.videos.length === 0;
   });
 
-  // The validation rules
-  const rules = computed(() => {
-    return {
-      content: { required: requiredField('Content') },
-    };
-  });
-
-  const v$ = useVuelidate(rules, form);
-
   /**
    * Handles the image input field.
    *
-   * @param {Event} event - The input change event from an <input type="file"> element.
+   * @param {Event} event
    *
    * @returns {void}
    */
@@ -61,7 +59,7 @@ export const useCreatePost = () => {
   /**
    * Handles the video input field.
    *
-   * @param {Event} event - The input change event from an <input type="file"> element.
+   * @param {Event} event
    *
    * @returns {void}
    */
@@ -75,10 +73,9 @@ export const useCreatePost = () => {
   /**
    * Process the creation of a post.
    *
-   * @returns {Promise<boolean|undefined>} Returns true if post creation succeeds, 
-   * undefined if validation fails or an error occurs.
+   * @returns {Promise<boolean|undefined>} Returns true if post creation succeeds
    */
-  const createPost = async () => {
+  const processPost = async (userId) => {
     // Disable the submit button
     isSubmitting.value = true;
 
@@ -109,7 +106,7 @@ export const useCreatePost = () => {
       });
 
       // Send the data to the server
-      createPostRequest(formData);
+      createPost(formData);
 
       return true;
     } catch (error) {
@@ -124,6 +121,6 @@ export const useCreatePost = () => {
     isPostButtonDisabled,
     onImageChange,
     onVideoChange,
-    createPost,
+    processPost,
   };
 };
