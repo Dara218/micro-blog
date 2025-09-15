@@ -1,4 +1,4 @@
-!<template>
+<template>
   <div class="header-center">
     <div class="search-bar">
       <input

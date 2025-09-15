@@ -13,6 +13,7 @@
             v-model="form.content"
           ></textarea>
           <p class="text-red-500" v-if="v$.content.$error">{{ v$.content.$errors[0].$message }}</p>
+          <p class="text-red-500" v-if="serverError">{{ serverError }}</p>
         </div>
       </div>
     </div>
@@ -69,6 +70,8 @@
       </button>
     </div>
 
+    <ImagePreview :images="form.images"/>
+
     <div class="create-post-footer">
       <div class="post-options">
         <label class="option-item">
@@ -88,13 +91,17 @@
 </template>
 
 <script setup>
+  import { ref } from 'vue';
   import { useCreatePost } from '@/composables/useCreatePost';
+  import ImagePreview from './ImagePreview.vue';
 
   const props = defineProps([
     'userAvatar',
     'userId',
   ]);
+  const emit = defineEmits(['new-post']);
 
+  const serverError = ref('');
   const {
     form,
     v$,
@@ -103,11 +110,19 @@
     onImageChange,
     onVideoChange,
     processPost,
-  } = useCreatePost();
+  } = useCreatePost(props.userId);
 
   const onSubmit = async () => {
-    const isSuccess = await processPost(props.userId);
+    serverError.value = '';
 
-    if (isSuccess) isSubmitting.value = true;
+    try {
+      const createdPost = await processPost();
+
+      if (createdPost) {
+        emit('new-post', createdPost)
+      };
+    } catch (error) {
+      serverError.value = error;
+    }
   };
 </script>

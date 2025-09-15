@@ -1,78 +1,45 @@
-// Login page specific styles
-.login-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-  @include flex-center;
-  
+@layer components {
+  .login-page {
+    @apply min-h-screen bg-gradient-to-br from-blue-500 to-blue-900 flex items-center justify-center;
+  }
+
   .login-container {
-    background-color: $white;
-    border-radius: 1rem;
-    padding: $spacing-xl;
-    width: 100%;
-    max-width: 400px;
-    @include card-shadow;
-    
-    @include mobile {
-      margin: $spacing-sm;
-      padding: $spacing-lg;
-    }
-    
-    .login-header {
-      text-align: center;
-      margin-bottom: $spacing-xl;
-      
-      .login-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $text-dark;
-        margin-bottom: $spacing-xs;
-      }
-      
-      .login-subtitle {
-        color: $text-light;
-        font-size: 1rem;
-      }
-    }
-    
-    .login-form {
-      .form-group {
-        margin-bottom: $spacing-md;
-      }
-      
-      .form-actions {
-        margin-top: $spacing-lg;
-        
-        .btn-login {
-          @extend .btn;
-          @extend .btn-primary;
-          @extend .btn-full;
-          margin-bottom: $spacing-sm;
-        }
-        
-        .btn-forgot {
-          @extend .btn;
-          @extend .btn-outline;
-          @extend .btn-full;
-          font-size: 0.875rem;
-        }
-      }
-    }
-    
-    .login-footer {
-      text-align: center;
-      margin-top: $spacing-lg;
-      padding-top: $spacing-lg;
-      border-top: 1px solid #e5e7eb;
-      
-      .signup-link {
-        color: $primary-color;
-        text-decoration: none;
-        font-weight: 600;
-        
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
+    @apply bg-white rounded-2xl p-10 w-full max-w-md shadow-md md:mx-4 md:p-8;
+  }
+
+  .login-header {
+    @apply mb-8;
+  }
+
+  .login-form {
+    @apply space-y-6;
+  }
+
+  .login-title {
+    @apply text-2xl font-bold text-gray-900 mb-1;
+  }
+
+  .login-subtitle {
+    @apply text-gray-500 text-base;
+  }
+
+  .form-actions {
+    @apply mt-6;
+  }
+
+  .btn-login {
+    @apply w-full mb-4;
+  }
+
+  .btn-forgot {
+    @apply w-full text-sm;
+  }
+
+  .login-footer {
+    @apply text-center mt-6 pt-6 border-t border-gray-200;
+  }
+
+  .signup-link {
+    @apply text-blue-500 font-semibold no-underline hover:underline;
   }
 }

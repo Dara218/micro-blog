@@ -4,6 +4,7 @@ import {
   minLength,
   required,
   sameAs,
+  maxLength,
 } from "@vuelidate/validators";
 
 /**
@@ -28,6 +29,18 @@ export const requiredField = (fieldName) => {
 export const minLengthField = (fieldName, length) => {
   return helpers.withMessage(`${fieldName} must be at least ${length} characters`, minLength(length));
 };
+
+/**
+ * Maximum length field.
+ *
+ * @param {*} fieldName The field name
+ * @param {*} otherField The maximum length
+ *
+ * @returns string
+ */
+export const maxLengthField = (fieldName, length) => {
+  return helpers.withMessage(`${fieldName} must not exceed ${length} characters`, maxLength(length));
+}
 
 /**
  * Same as other field.

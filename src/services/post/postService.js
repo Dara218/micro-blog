@@ -4,7 +4,8 @@ import { api } from "../common/http";
 /**
  * Builds a FormData object for posting content with media and settings.
  *
- * @param {string} param0.content - The text content of the post.
+ * @param {int} param0.userId - The user id of the post creator.
+ * @param {string} param.content - The text content of the post.
  * @param {File[]} param0.images - List of image files to upload.
  * @param {File[]} param0.videos - List of video files to upload.
  * @param {boolean} param0.isAllowComments - Whether comments are allowed.
@@ -13,6 +14,7 @@ import { api } from "../common/http";
  * @returns {FormData} A FormData instance containing the post data.
  */
 export const buildPostFormData = ({
+  userId,
   content,
   images,
   videos,
@@ -21,6 +23,7 @@ export const buildPostFormData = ({
 }) => {
   const formData = new FormData();
 
+  formData.append('user_id', String(userId));
   formData.append('content', content);
   images.forEach(file => formData.append('images[]', file));
   videos.forEach(file => formData.append('videos[]', file));
@@ -37,19 +40,14 @@ export const buildPostFormData = ({
  *
  * @returns {Promise<import('axios').AxiosResponse>} The Axios response promise.
  */
-export const createPost = (formData) => {
-  console.log('Post Created.');
-
-  // return axios.post(`/api/post/{id}/store`, formData, {
-  //   headers: { 'Content-Type': 'multipart/form-data' },
-  // });
+export const createPost = formData => {
+  return api.post(API_ENDPOINTS.POST.CREATE_POST, formData);
 }
 
 /**
- * Retrieves a post with a specific ID from an API.
+ * Retrieves the posts of a user.
  *
- * @param id - The `id` parameter is the unique identifier of the post that you want to retrieve using
- * the `getPost` function.
+ * @param id - The user id
  *
  * @returns {Promise<import('axios').AxiosResponse>} The Axios response promise.
  */
@@ -58,7 +56,7 @@ export const getPost = (id) => api.get(API_ENDPOINTS.POST.GET_POST(id));
 /**
  * Retrieve posts for a user's friends and home feed based on the provided ID.
  *
- * @param id - Used to specify the user or post ID for which you want to retrieve the corresponding posts.
+ * @param id - The user id
  * 
  * @returns {Promise<import('axios').AxiosResponse>} The Axios response promise.
  */
@@ -67,7 +65,7 @@ export const getFriendsPost = (id) => api.get(API_ENDPOINTS.POST.GET_FRIENDS_POS
 /**
  * Retrieves a specific post for display on the home page.
  *
- * @param id - Used to specify the unique identifier of the post that you want to retrieve for the home page.
+ * @param id - The user id
  * 
  * @returns {Promise<import('axios').AxiosResponse>} The Axios response promise.
  */

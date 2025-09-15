@@ -100,3 +100,7 @@
     }
   };
 </script>
+
+<style lang="scss" scoped>
+  @use '@/assets/styles/main.scss';
+</style>

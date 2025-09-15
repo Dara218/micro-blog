@@ -45,6 +45,7 @@
           <CreatePostForm
             :userAvatar="avatarUrl"
             :userId="auth.user.id"
+            @new-post="prependNewPost"
           />
 
           <!-- Posts Feed -->
@@ -53,6 +54,7 @@
               :avatarUrl="homePost.user.avatar_url"
               :name="homePost.user.name"
               :content="homePost.content"
+              :media="homePost.media"
             />
           </div>
         </section>
@@ -72,7 +74,8 @@
 </template>
 
 <script setup>
-  // Todo: Fix todo and push to repository. Ask cursor if code is okay.
+  // Todo: Push to repo but same branch. Don't create new repo.
+  // Todo: Do the media add. Start by displaying selected media
 
   // Vue core
   import { computed, onMounted, ref } from 'vue';
@@ -119,4 +122,8 @@
 
   const isCreatePostModalOpen = ref(false);
   const toggleCreatePostModal = () => isCreatePostModalOpen.value = !isCreatePostModalOpen.value;
+
+  const prependNewPost = (newPost) => {
+    homePosts.value.unshift(newPost);
+  };
 </script>

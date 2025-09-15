@@ -1,12 +1,13 @@
 import { computed, reactive, ref } from 'vue';
-import { requiredField } from '@/composables/useValidationRules';
+import { maxLengthField } from '@/composables/useValidationRules';
 import { buildPostFormData, createPost } from '@/services/post/postService';
 import useVuelidate from '@vuelidate/core';
 
 /**
  * Composable for creating a new post with content, images, and videos.
- *
  * Provides form state, validation, and submission handling.
+ *
+ * @param userId - The user id
  *
  * @returns {Object} An object containing:
  * - {Object} form - The reactive form data (content, images, videos, toggles).
@@ -17,9 +18,11 @@ import useVuelidate from '@vuelidate/core';
  * - {Function} onVideoChange - Handles the video input field.
  * - {Function} createPost - Handles creating the post (returns Promise<boolean|undefined>).
  */
-export const useCreatePost = () => {
+export const useCreatePost = (userId) => {
   const isSubmitting = ref(false);
-  const form = reactive({
+
+  const createDefaultForm = (userId) => ({
+    user_id: userId,
     content: '',
     images: [],
     videos: [],
@@ -27,15 +30,26 @@ export const useCreatePost = () => {
     isAllowShares: true,
   });
 
+  const form = reactive(createDefaultForm(userId));
+  const resetForm = () => {
+    Object.assign(form, createDefaultForm(userId));
+
+    v$.value.$reset();
+  };
+
   // The validation rules
   const rules = computed(() => {
     return {
-      content: { required: requiredField('Content') },
+      content: { maxLength: maxLengthField('Post', 255) },
     };
   });
   const v$ = useVuelidate(rules, form);
 
-  // Checks if post submit button is disabled
+  /**
+   * Checks if post submit button is disabled.
+   *
+   * @returns {void}
+   */
   const isPostButtonDisabled = computed(() => {
     return !form.content.trim()
       && form.images.length === 0
@@ -51,6 +65,8 @@ export const useCreatePost = () => {
    */
   const onImageChange = (event) => {
     form.images = Array.from(event.target.files || []);
+
+    // Todo: Add image validation
 
     // Retains the image when user cancels the image selection
     event.target.value = '';
@@ -75,20 +91,11 @@ export const useCreatePost = () => {
    *
    * @returns {Promise<boolean|undefined>} Returns true if post creation succeeds
    */
-  const processPost = async (userId) => {
+  const processPost = async () => {
     // Disable the submit button
     isSubmitting.value = true;
 
     const isFormValidated = await v$.value.$validate();
-
-    // // log a plain snapshot so you can see values clearly
-    // console.log('form:', {
-    //   content: form.content,
-    //   images: form.images.map((file) => file.name),
-    //   video: form.video.map((file) => file.name),
-    //   comments: form.isAllowComments,
-    //   shares: form.isAllowShares,
-    // });
 
     if (!isFormValidated || isPostButtonDisabled.value) {
       isSubmitting.value = false;
@@ -98,6 +105,7 @@ export const useCreatePost = () => {
 
     try {
       const formData = buildPostFormData({
+        userId: form.user_id,
         content: form.content,
         images: form.images,
         videos: form.videos,
@@ -106,11 +114,19 @@ export const useCreatePost = () => {
       });
 
       // Send the data to the server
-      createPost(formData);
+      const { data } = await createPost(formData);
+      if (!data.success) return false;
 
-      return true;
+      return data.post;
     } catch (error) {
-      console.error(error.response?.data);
+      // Re-enable the button if server error
+      isSubmitting.value = false;
+
+      throw error.response?.data.message;
+    } finally {
+      isSubmitting.value = false;
+
+      resetForm();
     }
   };
 
