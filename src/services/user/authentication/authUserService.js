@@ -25,17 +25,16 @@ export const login = (credentials) => api.post(API_ENDPOINTS.AUTH.LOGIN, credent
 export const getAuthUser = () => api.get(API_ENDPOINTS.AUTH.GET_AUTH);
 
 /**
- * Logs out the current user.
- * The server should clear the session cookie.
+ * Logs out the current user. The server should clear the session cookie.
  *
  * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
  */
 export const logout = () => api.post(API_ENDPOINTS.AUTH.LOGOUT);
 
 /**
- * This function retrieves user statistics based on the provided user ID.
+ * Retrieves user statistics based on the provided user ID.
  * 
- * @param id - unique identifier of the user for whom you want to retrieve statistics.
+ * @param id - Id of the user for whom you want to retrieve statistics.
  * 
  * @returns {Promise<import('axios').AxiosResponse<any>>} Axios response promise
  */

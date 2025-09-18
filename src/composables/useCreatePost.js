@@ -1,6 +1,7 @@
 import { computed, reactive, ref } from 'vue';
-import { maxLengthField } from '@/composables/useValidationRules';
+import { fileType, maxFileSize, maxLengthField } from '@/composables/useValidationRules';
 import { buildPostFormData, createPost } from '@/services/post/postService';
+import { VALIDATION } from '@/constants/validation';
 import useVuelidate from '@vuelidate/core';
 
 /**
@@ -29,8 +30,8 @@ export const useCreatePost = (userId) => {
     isAllowComments: true,
     isAllowShares: true,
   });
-
   const form = reactive(createDefaultForm(userId));
+
   const resetForm = () => {
     Object.assign(form, createDefaultForm(userId));
 
@@ -41,6 +42,11 @@ export const useCreatePost = (userId) => {
   const rules = computed(() => {
     return {
       content: { maxLength: maxLengthField('Post', 255) },
+      images: {
+        fileType: fileType('Image', VALIDATION.image_mimes),
+        fileSize: maxFileSize('Image', 5),
+        maxFiles: maxLengthField('Image', 10, 'file'),
+      }
     };
   });
   const v$ = useVuelidate(rules, form);
@@ -66,7 +72,8 @@ export const useCreatePost = (userId) => {
   const onImageChange = (event) => {
     form.images = Array.from(event.target.files || []);
 
-    // Todo: Add image validation
+    // Trigger validation for the images field
+    const test = v$.value.images.$touch();
 
     // Retains the image when user cancels the image selection
     event.target.value = '';

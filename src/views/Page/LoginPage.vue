@@ -16,7 +16,7 @@
             v-model="form.email"
             autocomplete="on"
           />
-          <p class="text-red-500" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</p>
+          <p class="form-error" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</p>
         </div>
         
         <div class="form-group">
@@ -28,13 +28,13 @@
             v-model="form.password"
             autocomplete="off"
           />
-          <p class="text-red-500" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</p>
+          <p class="form-error" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</p>
         </div>
         
         <div class="form-actions">
           <button type="submit" class="btn-login" :disabled="isSubmitBtnDisabled">Sign In</button>
           <button type="button" class="btn-forgot">Forgot Password?</button>
-          <div class="text-red-500 text-center mt-3" v-if="auth.error">{{ auth.error }}</div>
+          <div class="form-error text-center mt-3" v-if="auth.error">{{ auth.error }}</div>
         </div>
       </form>
 

@@ -12,8 +12,8 @@
             rows="3"
             v-model="form.content"
           ></textarea>
-          <p class="text-red-500" v-if="v$.content.$error">{{ v$.content.$errors[0].$message }}</p>
-          <p class="text-red-500" v-if="serverError">{{ serverError }}</p>
+          <p class="form-error" v-if="v$.content.$error">{{ v$.content.$errors[0].$message }}</p>
+          <p class="form-error" v-if="serverError">{{ serverError }}</p>
         </div>
       </div>
     </div>
@@ -70,7 +70,15 @@
       </button>
     </div>
 
-    <ImagePreview :images="form.images"/>
+    <!-- Image preview -->
+    <ImagePreview :images="form.images" v-if="!v$.images.$error"/>
+
+    <!-- Image error validation -->
+    <ul class="form-error" v-if="v$.images.$error">
+      <li v-if="v$.images.fileType.$invalid">{{ v$.images.fileType.$message }}</li>
+      <li v-if="!v$.images.fileType.$invalid && v$.images.fileSize.$invalid">{{ v$.images.fileSize.$message }}</li>
+      <li v-if="v$.images.maxFiles.$invalid">{{ v$.images.maxFiles.$message }}</li>
+    </ul>
 
     <div class="create-post-footer">
       <div class="post-options">
@@ -83,7 +91,7 @@
           <span>Allow shares</span>
         </label>
       </div>
-      <button type="submit" class="btn-post" :disabled="isPostButtonDisabled || isSubmitting">
+      <button type="submit" class="btn-post" :disabled="v$.images.$error || (isPostButtonDisabled || isSubmitting)">
         Post
       </button>
     </div>
@@ -118,9 +126,7 @@
     try {
       const createdPost = await processPost();
 
-      if (createdPost) {
-        emit('new-post', createdPost)
-      };
+      if (createdPost) emit('new-post', createdPost);
     } catch (error) {
       serverError.value = error;
     }

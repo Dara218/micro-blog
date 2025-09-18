@@ -12,7 +12,7 @@
 
         <!-- Create post button -->
         <div class="header-right">
-          <button class="btn-create-post" @click="toggleCreatePostModal">
+          <button class="btn-create-post" @click="toggleCreatePostModal(false)">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -51,8 +51,8 @@
           <!-- Posts Feed -->
           <div class="posts-feed" v-for="homePost in homePosts" :key="homePost.id">
             <UserPostCard
-              :avatarUrl="homePost.user.avatar_url"
-              :name="homePost.user.name"
+              :avatarUrl="homePost.user?.avatar_url"
+              :name="homePost.user?.name"
               :content="homePost.content"
               :media="homePost.media"
             />
@@ -68,15 +68,12 @@
   <CreatePostModal
     :userAvatar="avatarUrl"
     :userId ="auth.user.id"
-    @close-modal="toggleCreatePostModal"
+    @new-post="toggleCreatePostModal"
     v-if="isCreatePostModalOpen"
   />
 </template>
 
 <script setup>
-  // Todo: Push to repo but same branch. Don't create new repo.
-  // Todo: Do the media add. Start by displaying selected media
-
   // Vue core
   import { computed, onMounted, ref } from 'vue';
 
@@ -121,9 +118,12 @@
   });
 
   const isCreatePostModalOpen = ref(false);
-  const toggleCreatePostModal = () => isCreatePostModalOpen.value = !isCreatePostModalOpen.value;
 
-  const prependNewPost = (newPost) => {
-    homePosts.value.unshift(newPost);
+  const toggleCreatePostModal = (newPost) => {
+    isCreatePostModalOpen.value = !isCreatePostModalOpen.value
+
+    if (newPost) prependNewPost(newPost);
   };
+
+  const prependNewPost = (newPost) => homePosts.value.unshift(newPost);
 </script>

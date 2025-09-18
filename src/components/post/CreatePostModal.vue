@@ -1,6 +1,6 @@
 <template>
   <!-- Modal Overlay -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="closeCreatePostModal">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="closeCreatePostModal(false)">
     <!-- Modal Container -->
     <div class="w-full max-w-2xl rounded-xl bg-white shadow-xl">
       <!-- Header -->
@@ -9,7 +9,7 @@
         <button
           type="button"
           class="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 cursor-pointer"
-          @click="closeCreatePostModal">×</button>
+          @click="closeCreatePostModal(false)">×</button>
       </div>
 
       <!-- Body -->
@@ -18,6 +18,7 @@
           <CreatePostForm
             :userAvatar="props.userAvatar"
             :userId="props.userId"
+            @new-post="closeCreatePostModal"
           />
         </section>
       </div>
@@ -28,11 +29,11 @@
 <script setup>
   import CreatePostForm from './CreatePostForm.vue';
 
-  const emit = defineEmits(['close-modal']);
+  const emit = defineEmits(['new-post']);
   const props = defineProps([
     'userAvatar',
     'userId',
   ]);
 
-  const closeCreatePostModal = () => emit('close-modal');
+  const closeCreatePostModal = (newPost) => emit('new-post', newPost);
 </script>

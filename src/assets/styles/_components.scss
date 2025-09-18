@@ -69,7 +69,7 @@
     @apply border-red-500;
   }
 
-  .form-group .form-error {
+  .form-error {
     @apply text-red-500 text-sm mt-2;
   }
 
@@ -140,7 +140,7 @@
     }
 
     .image-tile {
-      @apply w-full object-cover;
+      @apply w-full object-cover cursor-pointer;
     }
 
     // Heights
