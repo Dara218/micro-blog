@@ -78,12 +78,12 @@
       />
       <div class="tile-wrapper">
         <img
-          :key="index"
+          :key="3"
           :src="useCreateObjectUrl(props.images[3])"
-          @click="showImage(index)"
+          @click="showImage(3)"
           class="image-tile image-tile-sm"
         />
-        <div v-if="props.images.length > 4" class="tile-overlay">
+        <div v-if="props.images.length > 4" class="tile-overlay cursor-pointer" @click="showImage(3)">
           +{{ props.images.length - 4 }}
         </div>
       </div>
