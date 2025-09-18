@@ -1,4 +1,4 @@
-!<template>
+<template>
   <aside class="right-sidebar">
     <div class="sidebar-content">
       <!-- Trending Topics -->

@@ -1,701 +1,375 @@
-// Home page specific styles
 .home-page {
-  min-height: 100vh;
-  background-color: #f8fafc;
-  
-  // Header Styles
-  .home-header {
-    background-color: $white;
-    border-bottom: 1px solid #e5e7eb;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 $spacing-md;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      
-      @include mobile {
-        padding: 0 $spacing-sm;
-      }
-      
-      .header-left {
-        .logo {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: $primary-color;
-          margin: 0;
-        }
-      }
-      
-      .header-center {
-        flex: 1;
-        max-width: 400px;
-        margin: 0 $spacing-lg;
-        
-        @include mobile {
-          margin: 0 $spacing-sm;
-          max-width: 200px;
-        }
-        
-        .search-bar {
-          position: relative;
-          display: flex;
-          align-items: center;
-          
-          .search-input {
-            width: 100%;
-            padding: 0.5rem 2.5rem 0.5rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 2rem;
-            background-color: #f9fafb;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-            
-            &:focus {
-              outline: none;
-              border-color: $primary-color;
-              background-color: $white;
-              box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
-            }
-            
-            &::placeholder {
-              color: #9ca3af;
-            }
-          }
-          
-          .search-btn {
-            position: absolute;
-            right: 0.5rem;
-            background: none;
-            border: none;
-            color: #6b7280;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 50%;
-            transition: color 0.2s ease;
-            
-            &:hover {
-              color: $primary-color;
-            }
-          }
-        }
-      }
-      
-      .header-right {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        
-        .btn-create-post {
-          @extend .btn;
-          @extend .btn-primary;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 1rem;
-          font-size: 0.875rem;
-          
-          @include mobile {
-            padding: 0.5rem;
-            span {
-              display: none;
-            }
-          }
-        }
-        
-        .user-menu {
-          .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            
-            &:hover {
-              transform: scale(1.05);
-            }
-            
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  // Main Content
-  .home-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: $spacing-lg $spacing-md;
-    
-    @include mobile {
-      padding: $spacing-sm;
-    }
-    
-    .main-container {
-      display: grid;
-      grid-template-columns: 280px 1fr 320px;
-      gap: $spacing-lg;
-      
-      @include tablet {
-        grid-template-columns: 240px 1fr 280px;
-        gap: $spacing-md;
-      }
-      
-      @include mobile {
-        grid-template-columns: 1fr;
-        gap: $spacing-sm;
-      }
-    }
-  }
-  
-  // Sidebar Styles
-  .sidebar {
-    @include mobile {
-      order: 2;
-    }
-    
-    .sidebar-content {
-      position: sticky;
-      top: 80px;
-      
-      @include mobile {
-        position: static;
-        display: flex;
-        gap: $spacing-sm;
-        overflow-x: auto;
-        padding-bottom: $spacing-sm;
-      }
-    }
-    
-    .user-profile-card {
-      background-color: $white;
-      border-radius: 1rem;
-      padding: $spacing-lg;
-      margin-bottom: $spacing-lg;
-      @include card-shadow;
-      
-      @include mobile {
-        flex-shrink: 0;
-        width: 200px;
-        margin-bottom: 0;
-        padding: $spacing-md;
-      }
-      
-      .profile-avatar {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin: 0 auto $spacing-sm;
-        
-        @include mobile {
-          width: 60px;
-          height: 60px;
-        }
-        
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-      
-      .profile-name {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: $text-dark;
-        text-align: center;
-        margin-bottom: 0.25rem;
-        
-        @include mobile {
-          font-size: 1rem;
-        }
-      }
-      
-      .profile-username {
-        color: $text-light;
-        text-align: center;
-        margin-bottom: $spacing-md;
-        font-size: 0.875rem;
-      }
-      
-      .profile-stats {
-        display: flex;
-        justify-content: space-around;
-        
-        .stat {
-          text-align: center;
-          
-          .stat-number {
-            display: block;
-            font-weight: 600;
-            color: $text-dark;
-            font-size: 1.125rem;
-          }
-          
-          .stat-label {
-            font-size: 0.75rem;
-            color: $text-light;
-          }
-        }
-      }
-    }
-    
-    .sidebar-nav {
-      background-color: $white;
-      border-radius: 1rem;
-      padding: $spacing-sm;
-      @include card-shadow;
-      
-      @include mobile {
-        display: flex;
-        gap: $spacing-xs;
-        padding: $spacing-xs;
-        overflow-x: auto;
-      }
-      
-      .nav-item {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        padding: $spacing-sm;
-        border-radius: 0.5rem;
-        color: $text-light;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        margin-bottom: 0.25rem;
-        
-        @include mobile {
-          flex-shrink: 0;
-          margin-bottom: 0;
-          padding: $spacing-xs $spacing-sm;
-          white-space: nowrap;
-        }
-        
-        &:last-child {
-          margin-bottom: 0;
-        }
-        
-        &:hover {
-          background-color: #f3f4f6;
-          color: $text-dark;
-        }
-        
-        &.active {
-          background-color: rgba($primary-color, 0.1);
-          color: $primary-color;
-          font-weight: 600;
-        }
-        
-        svg {
-          width: 20px;
-          height: 20px;
-        }
-      }
-    }
-  }
-  
-  // Feed Styles
-  .feed {
-    min-width: 0; // Prevents grid overflow
-    
-    .create-post-card {
-      background-color: $white;
-      border-radius: 1rem;
-      padding: $spacing-lg;
-      margin-bottom: $spacing-lg;
-      @include card-shadow;
-      
-      .create-post-header {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        margin-bottom: $spacing-md;
-        
-        .user-avatar-small {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-        
-        .create-post-input {
-          flex: 1;
-          padding: $spacing-sm $spacing-md;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.75rem;
-          background-color: #f9fafb;
-          color: $text-dark;
-          font-size: 0.875rem;
-          line-height: 1.5;
-          resize: none;
-          min-height: 3rem;
-          max-height: 8rem;
-          transition: all 0.2s ease;
-          
-          &:focus {
-            outline: none;
-            border-color: $primary-color;
-            background-color: $white;
-            box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
-          }
-          
-          &::placeholder {
-            color: $text-light;
-          }
-        }
-      }
-      
+  @apply min-h-screen bg-slate-50;
+}
 
-      
-      .create-post-actions {
-        display: flex;
-        gap: $spacing-sm;
-        flex-wrap: wrap;
-        
-        .action-btn {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          padding: $spacing-sm;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.5rem;
-          background-color: $white;
-          color: $text-light;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          font-size: 0.875rem;
-          min-width: 0;
-          
-          &:hover {
-            background-color: #f9fafb;
-            border-color: #d1d5db;
-            color: $text-dark;
-          }
-          
-          @include mobile {
-            flex: none;
-            min-width: 80px;
-          }
-        }
-        
-        .file-input-label {
-          position: relative;
-          overflow: hidden;
-          
-          .file-input {
-            position: absolute;
-            left: -9999px;
-            opacity: 0;
-          }
-        }
-      }
-      
-      .create-post-footer {
-        margin-top: $spacing-md;
-        padding-top: $spacing-md;
-        border-top: 1px solid #f3f4f6;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        
-        .post-options {
-          display: flex;
-          gap: $spacing-md;
-          
-          .option-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: $text-light;
-            cursor: pointer;
-            
-            input[type="checkbox"] {
-              width: auto;
-              margin: 0;
-            }
-            
-            &:hover {
-              color: $text-dark;
-            }
-          }
-        }
-        
-        .btn-post {
-          @extend .btn;
-          @extend .btn-primary;
-          padding: 0.5rem 1.5rem;
-          font-size: 0.875rem;
-          
-          &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-          }
-        }
-      }
-    }
-    
-    .posts-feed {
-      .post-card {
-        background-color: $white;
-        border-radius: 1rem;
-        padding: $spacing-lg;
-        margin-bottom: $spacing-lg;
-        @include card-shadow;
-        
-        .post-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: $spacing-md;
-          
-          .post-author {
-            display: flex;
-            align-items: center;
-            gap: $spacing-sm;
-            
-            .author-avatar {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              overflow: hidden;
-              
-              img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-              }
-            }
-            
-            .author-info {
-              .author-name {
-                font-weight: 600;
-                color: $text-dark;
-                margin: 0 0 0.125rem 0;
-                font-size: 0.875rem;
-              }
-              
-              .post-meta {
-                color: $text-light;
-                font-size: 0.75rem;
-                margin: 0;
-              }
-            }
-          }
-          
-          .post-menu {
-            background: none;
-            border: none;
-            color: $text-light;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s ease;
-            
-            &:hover {
-              background-color: #f3f4f6;
-              color: $text-dark;
-            }
-          }
-        }
-        
-        .post-content {
-          margin-bottom: $spacing-md;
-          
-          .post-text {
-            color: $text-dark;
-            line-height: 1.6;
-            margin-bottom: $spacing-sm;
-            font-size: 0.875rem;
-          }
-          
-          .post-image {
-            border-radius: 0.75rem;
-            overflow: hidden;
-            
-            img {
-              width: 100%;
-              height: auto;
-              display: block;
-            }
-          }
-        }
-        
-        .post-actions {
-          display: flex;
-          gap: $spacing-sm;
-          padding-top: $spacing-sm;
-          border-top: 1px solid #f3f4f6;
-          
-          .action-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: $spacing-sm;
-            border: none;
-            background: none;
-            color: $text-light;
-            cursor: pointer;
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
-            
-            &:hover {
-              background-color: #f9fafb;
-              color: $text-dark;
-            }
-            
-            svg {
-              width: 18px;
-              height: 18px;
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  // Right Sidebar Styles
-  .right-sidebar {
-    @include mobile {
-      order: 3;
-    }
-    
-    .sidebar-content {
-      position: sticky;
-      top: 80px;
-      display: flex;
-      flex-direction: column;
-      gap: $spacing-lg;
-      
-      @include mobile {
-        position: static;
-        flex-direction: row;
-        overflow-x: auto;
-        gap: $spacing-sm;
-      }
-    }
-    
-    .trending-card,
-    .suggested-card {
-      background-color: $white;
-      border-radius: 1rem;
-      padding: $spacing-lg;
-      @include card-shadow;
-      
-      @include mobile {
-        flex-shrink: 0;
-        width: 280px;
-        padding: $spacing-md;
-      }
-      
-      .card-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: $text-dark;
-        margin-bottom: $spacing-md;
-      }
-    }
-    
-    .trending-list {
-      .trending-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: $spacing-sm 0;
-        border-bottom: 1px solid #f3f4f6;
-        
-        &:last-child {
-          border-bottom: none;
-        }
-        
-        .trending-tag {
-          color: $primary-color;
-          font-weight: 500;
-          font-size: 0.875rem;
-        }
-        
-        .trending-count {
-          color: $text-light;
-          font-size: 0.75rem;
-        }
-      }
-    }
-    
-    .suggested-list {
-      .suggested-user {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        padding: $spacing-sm 0;
-        border-bottom: 1px solid #f3f4f6;
-        
-        &:last-child {
-          border-bottom: none;
-        }
-        
-        .user-avatar-small {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-        
-        .user-info {
-          flex: 1;
-          
-          .user-name {
-            font-weight: 500;
-            color: $text-dark;
-            margin: 0 0 0.125rem 0;
-            font-size: 0.875rem;
-          }
-          
-          .user-username {
-            color: $text-light;
-            font-size: 0.75rem;
-            margin: 0;
-          }
-        }
-        
-        .follow-btn {
-          @extend .btn;
-          @extend .btn-outline;
-          padding: 0.25rem 0.75rem;
-          font-size: 0.75rem;
-        }
-      }
-    }
-  }
+.home-header {
+  @apply bg-white border-b border-gray-200 sticky top-0 z-50;
+}
+
+.home-header .header-container {
+  @apply max-w-[1200px] mx-auto px-4 flex items-center justify-between h-16 flex-wrap gap-4;
+}
+
+.home-header .logo {
+  @apply text-2xl font-bold text-blue-500 m-0;
+}
+
+.header-center {
+  @apply flex-1 max-w-[400px] mx-6 hidden md:block;
+
+}
+.search-bar {
+  @apply relative flex items-center;
+}
+
+.search-input {
+  @apply w-full py-2 pl-4 pr-10 border border-gray-300 rounded-2xl bg-gray-50 text-sm transition focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)];
+}
+.search-input::placeholder {
+  @apply text-gray-400;
+}
+
+.search-btn {
+  @apply absolute right-2 text-gray-500 hover:text-blue-500 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+
+}
+
+.search-btn svg {
+  @apply w-5 h-5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.header-left {
+  @apply flex items-center;
+}
+
+.header-right {
+  @apply flex items-center gap-3;
+}
+
+.btn-create-post {
+  @apply flex items-center gap-2 px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.btn-create-post svg {
+  @apply w-5 h-5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.user-menu .user-avatar {
+  @apply w-10 h-10 rounded-full overflow-hidden hover:scale-105 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.user-menu .user-avatar img {
+  @apply w-full h-full object-cover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.home-main {
+  @apply py-8;
+}
+
+.home-main .main-container {
+  @apply max-w-[1200px] mx-auto px-4 grid grid-cols-1 lg:grid-cols-[280px_1fr_320px] gap-8;
+}
+
+.feed {
+  @apply space-y-8;
+}
+
+.feed .create-post-card {
+  @apply bg-white rounded-2xl p-8 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-header {
+  @apply flex items-center gap-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-header .user-avatar-small {
+  @apply w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-header .user-avatar-small img {
+  @apply w-full h-full object-cover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+.create-post-input {
+  @apply flex-1 p-2.5 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 text-sm transition resize-none min-h-12 max-h-32 focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)];
+}
+
+.create-post-input::placeholder {
+  @apply text-gray-400;
+}
+
+.create-post-actions {
+  @apply flex gap-2 flex-wrap focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-actions .action-btn {
+  @apply flex-1 flex items-center justify-center gap-2 p-2 border border-gray-200 rounded-md bg-white text-gray-500 text-sm transition min-w-0 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-actions .action-btn svg {
+  @apply w-5 h-5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.file-input-label {
+  @apply relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.file-input-label .file-input {
+  @apply absolute left-[-9999px] opacity-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.create-post-footer {
+  @apply mt-4 pt-4 border-t border-gray-100 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-options {
+  @apply flex gap-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.option-item {
+  @apply flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.option-item input[type="checkbox"] {
+  @apply w-auto m-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.option-item input[type="checkbox"]:checked {
+  @apply border-blue-500 bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.option-item input[type="checkbox"]:hover {
+  @apply border-gray-400;
+}
+
+.option-item input[type="checkbox"]:focus {
+  @apply outline-none border-blue-500 shadow-[0_0_0_3px_rgba(59,130,246,0.1)];
+}
+
+.option-item input[type="checkbox"].error {
+  @apply border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+}
+
+.option-item input[type="checkbox"].error:hover {
+  @apply border-red-600;
+}
+
+.option-item input[type="checkbox"].error:focus {
+  @apply outline-none border-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.1)];
+}
+
+.option-item input[type="checkbox"].error:checked {
+  @apply border-red-500 bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+}
+
+.option-item input[type="checkbox"].error:checked:hover {
+  @apply border-red-600 bg-red-600;
+}
+
+.option-item input[type="checkbox"].error:checked:focus {
+  @apply outline-none border-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.1)];
+}
+
+.option-item input[type="checkbox"].error:checked:hover {
+  @apply border-red-600 bg-red-600;
+}
+
+.btn-post {
+  @apply px-6 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Sidebar */
+.sidebar {
+  @apply space-y-4;
+}
+
+.sidebar .sidebar-content {
+  @apply sticky top-20 flex flex-col gap-3;
+}
+
+.user-profile-card {
+  @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-0;
+}
+
+.user-profile-card .profile-avatar {
+  @apply w-16 h-16 rounded-full overflow-hidden mx-auto mb-3;
+}
+
+.user-profile-card .profile-avatar img {
+  @apply w-full h-full object-cover;
+}
+
+.user-profile-card .profile-name {
+  @apply text-lg font-semibold text-gray-900 text-center mb-1;
+}
+
+.user-profile-card .profile-username {
+  @apply text-gray-500 text-center mb-4 text-sm;
+}
+
+.user-profile-card .profile-stats {
+  @apply flex justify-around;
+}
+
+.user-profile-card .profile-stats .stat-number {
+  @apply block font-semibold text-gray-900 text-lg;
+}
+
+.user-profile-card .profile-stats .stat-label {
+  @apply text-xs text-gray-500;
+}
+
+.sidebar-nav {
+  @apply bg-white rounded-2xl p-2 shadow-sm border border-gray-100;
+}
+
+.sidebar-nav .nav-item {
+  @apply flex items-center gap-3 p-3 rounded-lg text-gray-600 no-underline transition-colors mb-1 hover:bg-gray-50 hover:text-gray-900;
+}
+
+.sidebar-nav .nav-item:last-child {
+  @apply mb-0;
+}
+
+.sidebar-nav .nav-item.active {
+  @apply bg-blue-50 text-blue-600 font-medium;
+}
+
+.sidebar-nav .nav-item svg {
+  @apply w-5 h-5;
+}
+
+/* Posts feed */
+.posts-feed {
+  @apply space-y-8;
+}
+
+.posts-feed .post-card {
+  @apply bg-white rounded-2xl p-8 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-header {
+  @apply flex items-center justify-between mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-author {
+  @apply flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.author-avatar {
+  @apply w-10 h-10 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.author-avatar img {
+  @apply w-full h-full object-cover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.author-info {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.author-info .author-name {
+  @apply font-semibold text-gray-900 m-0 mb-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-meta {
+  @apply text-gray-500 text-xs m-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-menu {
+  @apply text-gray-500 p-1 rounded transition bg-transparent border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-menu:hover {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.post-content {
+  @apply mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-text {
+  @apply text-gray-900 leading-relaxed mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-image {
+  @apply rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-image img {
+  @apply w-full h-auto block focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-actions {
+  @apply flex gap-2 pt-2 border-t border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-actions .action-btn {
+  @apply flex-1 flex items-center justify-center gap-2 p-2 bg-transparent border-0 text-gray-500 cursor-pointer rounded-md transition text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.post-actions .action-btn:hover {
+  @apply bg-gray-50 text-gray-900;
+}
+
+.post-actions .action-btn svg {
+  @apply w-4 h-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Right sidebar */
+.right-sidebar {
+  @apply space-y-6;
+}
+
+.right-sidebar .sidebar-content {
+  @apply sticky top-20 flex flex-col gap-6;
+}
+
+.trending-card, .suggested-card {
+  @apply bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-0;
+}
+
+.card-title {
+  @apply text-lg font-semibold text-gray-900 mb-4;
+}
+
+.trending-list .trending-item {
+  @apply flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors;
+}
+
+.trending-tag {
+  @apply text-blue-500 font-medium text-sm hover:text-blue-600 transition-colors;
+}
+
+.trending-count {
+  @apply text-gray-500 text-xs;
+}
+
+.suggested-list .suggested-user {
+  @apply flex items-center gap-3 py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors;
+}
+
+.user-avatar-small {
+  @apply w-8 h-8 rounded-full overflow-hidden;
+}
+
+.user-avatar-small img {
+  @apply w-full h-full object-cover;
+}
+
+.user-info {
+  @apply flex-1;
+}
+
+.user-info .user-name {
+  @apply font-medium text-gray-900 m-0 mb-0.5 text-sm;
+}
+
+.user-username {
+  @apply text-gray-500 text-xs m-0;
+}
+
+.follow-btn {
+  @apply px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors;
 }
 
 // Allow reuse of feed styles inside modal by neutralizing page-level layout

@@ -1,4 +1,4 @@
-!<template>
+<template>
   <aside class="sidebar">
     <div class="sidebar-content">
       <div class="user-profile-card">
@@ -55,8 +55,6 @@
 </template>
 
 <script setup>
-  import { defineProps } from 'vue';
-
   const props = defineProps([
     'avatarUrl',
     'name',

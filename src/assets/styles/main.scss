@@ -1,17 +1,20 @@
-// Import variables first
-@import 'variables';
+// Import variables first (must be before any other rules)
+@use 'variables' as *;
 
 // Import mixins and utilities
-@import 'mixins';
+@use 'mixins' as *;
 
 // Import reusable components
-@import 'components';
+@use 'components' as *;
 
 // Import page-specific styles
-@import 'pages/landing';
-@import 'pages/login';
-@import 'pages/register';
-@import 'pages/home';
+@use 'pages/landing' as *;
+@use 'pages/login' as *;
+@use 'pages/register' as *;
+@use 'pages/home' as *;
+
+// Import Tailwind (using @use for consistency)
+@use './tailwind.scss';
 
 // Global styles can go here
 * {

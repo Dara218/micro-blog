@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
     GET_POST: id => `/api/post/${id}`,
     GET_FRIENDS_POST: id => `/api/post/${id}/friends`,
     GET_HOME_POST: id => `/api/post/${id}/home`,
+    CREATE_POST: `/api/post/store`,
   },
 };
 

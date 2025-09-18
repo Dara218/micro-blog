@@ -1,116 +1,63 @@
-// Register page specific styles
 .register-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-  @include flex-center;
-  
-  .register-container {
-    background-color: $white;
-    border-radius: 1rem;
-    padding: $spacing-xl;
-    width: 100%;
-    max-width: 500px;
-    margin: $spacing-sm;
-    @include card-shadow;
-    
-    @include mobile {
-      padding: $spacing-lg;
-    }
-    
-    .register-header {
-      text-align: center;
-      margin-bottom: $spacing-xl;
-      
-      .register-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $text-dark;
-        margin-bottom: $spacing-xs;
-      }
-      
-      .register-subtitle {
-        color: $text-light;
-        font-size: 1rem;
-      }
-    }
-    
-    .register-form {
-      .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: $spacing-sm;
-        
-        @include mobile {
-          grid-template-columns: 1fr;
-        }
-      }
-      
-      .form-group {
-        margin-bottom: $spacing-md;
-      }
-      
-      .form-actions {
-        margin-top: $spacing-lg;
-        
-        .btn-register {
-          @extend .btn;
-          @extend .btn-primary;
-          @extend .btn-full;
-          margin-bottom: $spacing-sm;
-        }
-        
-        .btn-back {
-          @extend .btn;
-          @extend .btn-outline;
-          @extend .btn-full;
-          font-size: 0.875rem;
-        }
-      }
-      
-      .terms-checkbox {
-        display: flex;
-        align-items: flex-start;
-        gap: $spacing-xs;
-        margin-bottom: $spacing-md;
-        
-        input[type="checkbox"] {
-          margin-top: 0.25rem;
-          width: auto;
-        }
-        
-        label {
-          font-size: 0.875rem;
-          color: $text-light;
-          line-height: 1.4;
-          
-          a {
-            color: $primary-color;
-            text-decoration: none;
-            font-weight: 600;
-            
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-        }
-      }
-    }
-    
-    .register-footer {
-      text-align: center;
-      margin-top: $spacing-lg;
-      padding-top: $spacing-lg;
-      border-top: 1px solid #e5e7eb;
-      
-      .login-link {
-        color: $primary-color;
-        text-decoration: none;
-        font-weight: 600;
-        
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
+  @apply min-h-screen bg-gradient-to-br from-blue-500 to-blue-900 flex items-center justify-center;
+}
+
+.register-container {
+  @apply bg-white rounded-2xl p-16 w-full max-w-xl shadow-md m-4 md:p-8;
+}
+
+.register-header {
+  @apply mb-8;
+}
+
+.register-form {
+  @apply space-y-6;
+}
+
+.register-title {
+  @apply text-2xl font-bold text-gray-900 mb-1;
+}
+
+.register-subtitle {
+  @apply text-gray-500 text-base;
+}
+
+.form-row {
+  @apply grid grid-cols-2 gap-4 md:grid-cols-1;
+}
+
+.form-actions {
+  @apply mt-6;
+}
+
+.btn-register {
+  @apply w-full mb-4;
+}
+
+.btn-back {
+  @apply w-full text-sm;
+}
+
+.terms-checkbox {
+  @apply flex-col;
+}
+
+.terms-checkbox .flex {
+  @apply items-center gap-2;
+}
+
+.terms-checkbox label {
+  @apply text-sm text-gray-500 leading-tight;
+}
+
+.terms-checkbox a {
+  @apply text-blue-500 font-semibold no-underline hover:underline;
+}
+
+.register-footer {
+  @apply text-center mt-6 pt-6 border-t border-gray-200;
+}
+
+.login-link {
+  @apply text-blue-500 font-semibold no-underline hover:underline;
 }

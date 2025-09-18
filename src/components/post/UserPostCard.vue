@@ -1,4 +1,4 @@
-!<template>
+<template>
   <article class="post-card">
     <div class="post-header">
       <div class="post-author">
@@ -21,8 +21,7 @@
       <p class="post-text">
         {{ props.content }}
       </p>
-      <!-- Todo: Add v-if has media -->
-      <div class="post-image">
+      <div class="post-image" v-if="props.media.length > 0">
         <img src="#" alt="Book" />
       </div>
     </div>
@@ -52,11 +51,11 @@
 
 <script setup>
   import { DEFAULT_USER_AVATAR } from '@/constants';
-  import { defineProps } from 'vue';
 
   const props = defineProps([
     'avatarUrl',
     'name',
     'content',
+    'media',
   ]);
 </script>

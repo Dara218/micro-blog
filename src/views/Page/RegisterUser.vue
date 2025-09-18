@@ -18,7 +18,7 @@
               v-model="form.firstName"
               autocomplete="given-name"
             />
-            <p class="text-red-500" v-if="v$.firstName.$error">{{ v$.firstName.$errors[0].$message }}</p>
+            <p class="form-error" v-if="v$.firstName.$error">{{ v$.firstName.$errors[0].$message }}</p>
           </div>
 
           <div class="form-group">
@@ -30,7 +30,7 @@
               v-model="form.lastName"
               autocomplete="family-name"
             />
-            <p class="text-red-500" v-if="v$.lastName.$error">{{ v$.lastName.$errors[0].$message }}</p>
+            <p class="form-error" v-if="v$.lastName.$error">{{ v$.lastName.$errors[0].$message }}</p>
           </div>
         </div>
 
@@ -44,7 +44,7 @@
             v-model="form.userName"
             autocomplete="userName"
           />
-          <p class="text-red-500" v-if="v$.userName.$error">{{ v$.userName.$errors[0].$message }}</p>
+          <p class="form-error" v-if="v$.userName.$error">{{ v$.userName.$errors[0].$message }}</p>
         </div>
 
         <!-- Email -->
@@ -57,7 +57,7 @@
             v-model="form.email"
             autocomplete="email"
           />
-          <p class="text-red-500" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</p>
+          <p class="form-error" v-if="v$.email.$error">{{ v$.email.$errors[0].$message }}</p>
         </div>
 
         <!-- Password -->
@@ -70,7 +70,7 @@
             v-model="form.password"
             autocomplete="new-password"
           />
-          <div class="text-red-500" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</div>
+          <div class="form-error" v-if="v$.password.$error">{{ v$.password.$errors[0].$message }}</div>
         </div>
 
         <!-- Confirm Password -->
@@ -83,7 +83,7 @@
             v-model="form.confirmPassword"
             autocomplete="new-password"
           />
-          <div class="text-red-500" v-if="v$.confirmPassword.$error">{{ v$.confirmPassword.$errors[0].$message }}</div>
+          <div class="form-error" v-if="v$.confirmPassword.$error">{{ v$.confirmPassword.$errors[0].$message }}</div>
         </div>
 
         <!-- Terms and Conditions -->
@@ -102,7 +102,7 @@
             <a href="#" >Privacy Policy</a>
           </label>
         </div>
-          <p class="text-red-500" v-if="v$.isPolicyAgree.$error">{{ v$.isPolicyAgree.$errors[0].$message }}</p>
+          <p class="form-error" v-if="v$.isPolicyAgree.$error">{{ v$.isPolicyAgree.$errors[0].$message }}</p>
         </div>
 
         <!-- Form Actions -->
@@ -197,5 +197,5 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/styles/main.scss';
+  @use '@/assets/styles/main.scss';
 </style>
