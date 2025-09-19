@@ -71,7 +71,11 @@
     </div>
 
     <!-- Image preview -->
-    <ImagePreview :images="form.images" v-if="!v$.images.$error"/>
+    <ImagePreview
+      :images="form.images"
+      :isUrl="false"
+      v-if="!v$.images.$error"
+    />
 
     <!-- Image error validation -->
     <ul class="form-error" v-if="v$.images.$error">

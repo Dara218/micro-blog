@@ -22,7 +22,10 @@
         {{ props.content }}
       </p>
       <div class="post-image" v-if="props.media.length > 0">
-        <img src="#" alt="Book" />
+        <ImagePreview
+          :images="mediaUrls"
+          :isUrl="true"
+        />
       </div>
     </div>
 
@@ -50,7 +53,10 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
+  import { mediaUrl } from '@/services/common/http';
+  import ImagePreview from './ImagePreview.vue';
 
   const props = defineProps([
     'avatarUrl',
@@ -58,4 +64,8 @@
     'content',
     'media',
   ]);
+
+  const mediaUrls = computed(() => {
+    return props.media?.map(media => mediaUrl(media.url)) || [];
+  });
 </script>

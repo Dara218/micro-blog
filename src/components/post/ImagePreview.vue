@@ -3,14 +3,14 @@
     <!-- 1 image -->
     <div v-if="props.images.length === 1" class="rounded-xl overflow-hidden">
       <img
-        :src="useCreateObjectUrl(props.images[0])"
+        :src="isUrl ? props.images[0] : useCreateObjectUrl(props.images[0])"
         key="1"
         @click="showImage(1)"
         class="image-tile"
       />
       <VueEasyLightbox
         :visible="visible"
-        :imgs="imageUrls"
+        :imgs="props.images"
         :index="index"
         @hide="visible = false"
       />
@@ -21,7 +21,7 @@
       <img
         v-for="(src, index) in props.images"
         :key="index"
-        :src="useCreateObjectUrl(src)"
+        :src="isUrl ? props.images[index] : useCreateObjectUrl(src)"
         @click="showImage(index)"
         class="image-tile image-tile-md"
       />
@@ -38,7 +38,7 @@
       <!-- Big image on left -->
       <img
         key="0"
-        :src="useCreateObjectUrl(props.images[0])"
+        :src="isUrl ? props.images[0] : useCreateObjectUrl(props.images[0])"
         @click="showImage(0)"
         class="image-tile image-tile-lg col-span-1 row-span-2"
       />
@@ -47,13 +47,13 @@
       <div class="flex flex-col gap-1">
       <img
         key="1"
-        :src="useCreateObjectUrl(props.images[1])"
+        :src="isUrl ? props.images[1] : useCreateObjectUrl(props.images[1])"
         @click="showImage(1)"
         class="image-tile image-tile-sm"
       />
       <img
         key="2"
-        :src="useCreateObjectUrl(props.images[2])"
+        :src="isUrl ? props.images[2] : useCreateObjectUrl(props.images[2])"
         @click="showImage(2)"
         class="image-tile image-tile-sm"
       />
@@ -72,14 +72,14 @@
       <img
         v-for="(src, index) in props.images.slice(0,3)"
         :key="index"
-        :src="useCreateObjectUrl(src)"
+        :src="isUrl ? props.images[index] : useCreateObjectUrl(src)"
         @click="showImage(index)"
         class="image-tile image-tile-sm"
       />
       <div class="tile-wrapper">
         <img
           :key="3"
-          :src="useCreateObjectUrl(props.images[3])"
+          :src="isUrl ? props.images[3] : useCreateObjectUrl(props.images[3])"
           @click="showImage(3)"
           class="image-tile image-tile-sm"
         />
@@ -103,7 +103,7 @@
   import { computed, ref } from 'vue';
   import VueEasyLightbox from 'vue-easy-lightbox';
 
-  const props = defineProps(['images']);
+  const props = defineProps(['images', 'isUrl']);
 
   const visible = ref(false);
   const index = ref(0);
@@ -112,5 +112,12 @@
     index.value = imgIndex;
     visible.value = true;
   };
-  const imageUrls = computed(() => props.images.map(file => useCreateObjectUrl(file)));
+
+  const imageUrls = computed(() => {
+    return props.images.map(item => {
+      if (typeof item === 'string') return item;
+      
+      return useCreateObjectUrl(item)
+    })
+  });
 </script>
