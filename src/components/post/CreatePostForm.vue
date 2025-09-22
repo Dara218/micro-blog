@@ -70,11 +70,12 @@
       </button>
     </div>
 
-    <!-- Image preview -->
+    <!-- Media preview -->
     <ImagePreview
       :images="form.images"
+      :videos="form.videos"
       :isUrl="false"
-      v-if="!v$.images.$error"
+      v-if="!v$.images.$error && !v$.videos.$error"
     />
 
     <!-- Image error validation -->
@@ -82,6 +83,12 @@
       <li v-if="v$.images.fileType.$invalid">{{ v$.images.fileType.$message }}</li>
       <li v-if="!v$.images.fileType.$invalid && v$.images.fileSize.$invalid">{{ v$.images.fileSize.$message }}</li>
       <li v-if="v$.images.maxFiles.$invalid">{{ v$.images.maxFiles.$message }}</li>
+    </ul>
+
+    <ul class="form-error" v-if="v$.videos.$error">
+      <li v-if="v$.videos.fileType.$invalid">{{ v$.videos.fileType.$message }}</li>
+      <li v-if="!v$.videos.fileType.$invalid && v$.videos.fileSize.$invalid">{{ v$.videos.fileSize.$message }}</li>
+      <li v-if="v$.videos.maxFiles.$invalid">{{ v$.videos.maxFiles.$message }}</li>
     </ul>
 
     <div class="create-post-footer">

@@ -23,7 +23,8 @@
       </p>
       <div class="post-image" v-if="props.media.length > 0">
         <ImagePreview
-          :images="mediaUrls"
+          :images="imageUrls"
+          :videos="videoUrls"
           :isUrl="true"
         />
       </div>
@@ -55,7 +56,7 @@
 <script setup>
   import { computed } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
-  import { mediaUrl } from '@/services/common/http';
+  import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
   import ImagePreview from './ImagePreview.vue';
 
   const props = defineProps([
@@ -65,7 +66,7 @@
     'media',
   ]);
 
-  const mediaUrls = computed(() => {
-    return props.media?.map(media => mediaUrl(media.url)) || [];
-  });
+  const parts = computed(() => usePartitionMedia(props.media || []));
+  const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
+  const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
 </script>
