@@ -46,6 +46,11 @@ export const useCreatePost = (userId) => {
         fileType: fileType('Image', VALIDATION.image_mimes),
         fileSize: maxFileSize('Image', 5),
         maxFiles: maxLengthField('Image', 10, 'file'),
+      },
+      videos: {
+        fileType: fileType('Video', VALIDATION.video_mimes),
+        fileSize: maxFileSize('Video', 25), // 25MB limit
+        maxFiles: maxLengthField('Video', 4, 'file'),
       }
     };
   });
@@ -73,7 +78,7 @@ export const useCreatePost = (userId) => {
     form.images = Array.from(event.target.files || []);
 
     // Trigger validation for the images field
-    const test = v$.value.images.$touch();
+    v$.value.images.$touch();
 
     // Retains the image when user cancels the image selection
     event.target.value = '';
@@ -88,6 +93,9 @@ export const useCreatePost = (userId) => {
    */
   const onVideoChange = (event) => {
     form.videos = Array.from(event.target.files || []);
+
+    // Trigger validation for the videos field
+    v$.value.videos.$touch();
 
     // Retains the video when user cancels the video selection
     event.target.value = '';

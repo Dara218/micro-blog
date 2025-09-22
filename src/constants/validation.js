@@ -6,6 +6,11 @@ export const VALIDATION = {
     'image/gif',
     'image/jpeg',
   ],
+  'video_mimes': [
+    'video/mp4',
+    'video/webm',
+    'video/mov',
+  ],
   // Other
 };
 

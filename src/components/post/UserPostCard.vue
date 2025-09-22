@@ -22,7 +22,11 @@
         {{ props.content }}
       </p>
       <div class="post-image" v-if="props.media.length > 0">
-        <img src="#" alt="Book" />
+        <ImagePreview
+          :images="imageUrls"
+          :videos="videoUrls"
+          :isUrl="true"
+        />
       </div>
     </div>
 
@@ -50,7 +54,10 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
+  import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
+  import ImagePreview from './ImagePreview.vue';
 
   const props = defineProps([
     'avatarUrl',
@@ -58,4 +65,8 @@
     'content',
     'media',
   ]);
+
+  const parts = computed(() => usePartitionMedia(props.media || []));
+  const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
+  const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
 </script>
