@@ -23,6 +23,9 @@
       </p>
       <div class="post-image" v-if="props.media.length > 0">
         <ImagePreview
+          :name="name"
+          :avatarUrl="props.avatarUrl"
+          :content="props.content"
           :images="imageUrls"
           :videos="videoUrls"
           :isUrl="true"

@@ -130,8 +130,91 @@
   }
 }
 
-// Image Preview component (under Tailwind components layer)
+// Image Preview component
 @layer components {
+  /* Modal styles (media left, comments right) */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50;
+  }
+
+  .modal-container {
+    @apply w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between border-b border-gray-200 px-4 py-3;
+  }
+
+  .modal-close {
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700;
+  }
+
+  .post-modal {
+    @apply grid grid-cols-1 md:grid-cols-[1.3fr_1fr];
+    min-height: 70vh;
+    max-height: 85vh;
+  }
+
+  .post-modal-media {
+    @apply bg-black flex items-center justify-center p-3 md:p-4;
+  }
+
+  .post-modal-media img,
+  .post-modal-media video {
+    @apply max-h-[85vh] w-auto h-auto rounded-xl;
+  }
+
+  .post-modal-comments {
+    @apply flex flex-col bg-white p-4;
+  }
+
+  .comments-scroll {
+    @apply flex-1 overflow-y-auto space-y-4 pr-2;
+  }
+
+  .comment-item {
+    @apply flex gap-3;
+  }
+  .comment-item .author-avatar {
+    @apply w-9 h-9 rounded-full overflow-hidden flex-shrink-0;
+  }
+
+  .comment-item .author-avatar img {
+    @apply w-full h-full object-cover;
+  }
+
+  .comment-item .comment-body {
+    @apply flex-1;
+  }
+
+  .comment-item .comment-meta {
+    @apply text-sm text-gray-600 mb-1; 
+  }
+
+  .comment-item .comment-name {
+    @apply font-medium text-gray-900;
+  }
+
+  .comment-item .comment-time {
+    @apply text-gray-400 text-xs;
+  }
+
+  .comment-item .comment-text {
+    @apply text-sm text-gray-800;
+  }
+
+  .comment-input {
+    @apply mt-4 pt-3 border-t border-gray-200 flex items-center gap-2;
+  }
+
+  .comment-field {
+    @apply flex-1 p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)];
+  }
+
+  .comment-send {
+    @apply px-3 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition;
+  }
+
   .image-preview {
     @apply mt-4 w-full max-w-xl;
 
