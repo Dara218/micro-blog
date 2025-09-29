@@ -2,9 +2,14 @@
   <!-- Overlay -->
   <div class="modal-overlay" @click.self="emit('close')">
     <!-- Container -->
-    <div class="modal-container">
+    <div class="modal-container" >
       <!-- Header -->
-      <div class="modal-header">
+      <div class="modal-header"
+        tabindex="0"
+        ref="modalContainer"
+        @keydown.left="previousImage(postStore, postIndex)"
+        @keydown.right="nextImage(postStore, false, props.media)"
+      >
         <div class="post-author">
           <div class="author-avatar">
             <img :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
@@ -24,7 +29,7 @@
             <!-- Navigation arrows - show only if 2+ media items -->
             <button 
               v-if="(props.media || []).length > 1"
-              @click.stop="previousImage()"
+              @click.stop="previousImage(postStore, postIndex)"
               class="nav-arrow nav-arrow-left"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -34,7 +39,7 @@
 
             <button 
               v-if="(props.media || []).length > 1" 
-              @click.stop="nextImage()"
+              @click.stop="nextImage(postStore, false, props.media)"
               class="nav-arrow nav-arrow-right"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -93,11 +98,12 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
   import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
   import { usePostStore } from '@/stores/usePostStore';
   import { ZoomImg } from 'vue3-zoomer';
+  import { nextImage, previousImage } from '@/composables/usePostMedia';
 
   const emit = defineEmits(['close']);
   const props = defineProps([
@@ -106,28 +112,16 @@
     'content',
     'media',
   ]);
-  const post = usePostStore();
-
+  const postStore = usePostStore();
   const postIndex = computed({
-    get: () => post.postPreviewIndex,
-    set: (val) => post.getPostPreviewIndex(val),
+    get: () => postStore.postPreviewIndex,
+    set: (val) => postStore.getPostPreviewIndex(val),
   });
+  const modalContainer = ref(null);
+
+  onMounted(() => modalContainer.value?.focus());
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
-
-  const previousImage = () => {
-    if (postIndex.value === 0) return;
-
-    postIndex.value -= 1;
-  };
-
-  const nextImage = () => {
-    const totalMedia = (props.media?.length || 0);
-
-    if (postIndex.value >= totalMedia - 1) return;
-
-    postIndex.value += 1;
-  };
 </script>

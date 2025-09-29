@@ -137,7 +137,20 @@
 
   <div class="modal-overlay" v-if="isOpenPostModal && isPostCreation" @click.self="openPostModal()">
     <!-- Container -->
-    <div class="modal-container" :style="modalStyles">
+    <div
+      class="modal-container"
+      :style="modalStyles"
+      tabindex="0"
+      ref="modalContainer"
+      @keydown.left.prevent.stop="previousImage(postStore, index)"
+      @keydown.right.prevent.stop="nextImage(
+        postStore,
+        true,
+        null,
+        props.images,
+        props.videos
+      )"
+    >
       <div v-if="props.images || props.videos" class="w-full relative">
         <!-- Navigation arrows - show only if 2+ media items -->
 
@@ -145,7 +158,7 @@
         <button
           type="button"
           v-if="(props.images?.length || 0) + (props.videos?.length || 0) > 1" 
-          @click.stop="previousImage()"
+          @click.stop="previousImage(postStore, index)"
           class="nav-arrow nav-arrow-left"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -157,7 +170,13 @@
         <button
           type="button"
           v-if="(props.images?.length || 0) + (props.videos?.length || 0) > 1" 
-          @click.stop="nextImage()"
+          @click.stop="nextImage(
+            postStore,
+            true,
+            null,
+            props.images,
+            props.videos
+          )"
           class="nav-arrow nav-arrow-right"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -194,15 +213,16 @@
 
 <script setup>
   import { useCreateObjectUrl } from '@/helpers/createObjectUrl';
-  import { computed, ref } from 'vue';
+  import { computed, nextTick, ref } from 'vue';
   import { usePostStore } from '@/stores/usePostStore';
+  import { nextImage, previousImage } from '@/composables/usePostMedia';
   import { ZoomImg } from 'vue3-zoomer';
   import PostCardModal from './PostCardModal.vue';
 
-  const post = usePostStore();
+  const postStore = usePostStore();
   const index = computed({
-    get: () => post.postPreviewIndex,
-    set: (val) => post.getPostPreviewIndex(val),
+    get: () => postStore.postPreviewIndex,
+    set: (val) => postStore.getPostPreviewIndex(val),
   });
 
   const props = defineProps({
@@ -215,13 +235,13 @@
     isPostCreation: { type: Boolean, default: false }
   });
 
+  const modalContainer = ref(null);
   const isOpenPostModal = ref(false);
 
   const mediaUrls = ((mediaType, isUrl) => isUrl
     ? mediaType
     : mediaType.map(file => useCreateObjectUrl(file))
   );
-
   const videoUrls = computed(() => mediaUrls(props.videos, props.isUrl));
 
   // Prepare media objects for the modal in a single place
@@ -292,24 +312,10 @@
 
   const openPostModal = (index) => {
     // Only update index if provided (when opening modal)
-    if (index !== undefined) {
-      post.getPostPreviewIndex(index);
-    }
+    if (index !== undefined) postStore.getPostPreviewIndex(index);
 
     isOpenPostModal.value = !isOpenPostModal.value;
-  };
 
-  const previousImage = () => {
-    if (index.value === 0) return;
-
-    index.value -= 1;
-  };
-
-  const nextImage = () => {
-    const totalMedia = (props.images?.length || 0) + (props.videos?.length || 0);
-
-    if (index.value >= totalMedia - 1) return;
-
-    index.value += 1;
+    nextTick(() => modalContainer.value?.focus());
   };
 </script>
