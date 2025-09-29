@@ -1,5 +1,5 @@
 <template>
-  <div class="image-preview" v-if="props.images">
+  <div class="image-preview" :class="{ 'max-w-none': isPostCreation }" v-if="props.images">
     <!-- 1 image -->
     <div v-if="props.images.length === 1" class="rounded-xl overflow-hidden">
       <img
@@ -64,7 +64,7 @@
           class="image-tile image-tile-sm"
           @click="openPostModal(3)"
         />
-        <div v-if="props.images.length > 4" class="tile-overlay cursor-pointer">
+        <div v-if="props.images.length > 4" class="tile-overlay cursor-pointer" @click="openPostModal(3)">
           +{{ props.images.length - 4 }}
         </div>
       </div>
@@ -72,13 +72,13 @@
   </div>
   
   <!-- Video preview -->
-  <div class="image-preview" v-if="props.videos">
+  <div class="image-preview" :class="{ 'max-w-none': isPostCreation }" v-if="props.videos">
     <!-- 1 video -->
     <div v-if="props.videos.length === 1">
       <video
         :src="isUrl ? props.videos[0] : videoUrls[0]"
         class="image-tile"
-        @click="openPostModal(0)"
+        @click="openPostModal((props.images?.length || 0) + 0)"
       />
     </div>
 
@@ -89,7 +89,7 @@
         :key="index"
         :src="isUrl ? props.videos[index] : useCreateObjectUrl(src)"
         class="image-tile image-tile-md"
-        @click="openPostModal(index)"
+        @click="openPostModal((props.images?.length || 0) + index)"
       />
     </div>
 
@@ -98,17 +98,17 @@
       <video
         :src="isUrl ? props.videos[0] : useCreateObjectUrl(props.videos[0])"
         class="image-tile image-tile-lg col-span-1 row-span-2"
-        @click="openPostModal(0)"
+        @click="openPostModal((props.images?.length || 0) + 0)"
       />
       <video
         :src="isUrl ? props.videos[1] :useCreateObjectUrl(props.videos[1])"
         class="image-tile image-tile-sm"
-        @click="openPostModal(1)"
+        @click="openPostModal((props.images?.length || 0) + 1)"
       />
       <video
         :src="isUrl ? props.videos[2] :useCreateObjectUrl(props.videos[2])"
         class="image-tile image-tile-sm"
-        @click="openPostModal(2)"
+        @click="openPostModal((props.images?.length || 0) + 2)"
       />
     </div>
 
@@ -119,14 +119,14 @@
         :key="index"
         :src="isUrl ? props.videos[index] : useCreateObjectUrl(src)"
         class="image-tile image-tile-sm"
-        @click="openPostModal(index)"
+        @click="openPostModal((props.images?.length || 0) + index)"
       />
       <div class="tile-wrapper">
         <video
           :key="3"
           :src="isUrl ? props.videos[3] :useCreateObjectUrl(props.videos[3])"
           class="image-tile image-tile-sm"
-          @click="openPostModal(3)"
+          @click="openPostModal((props.images?.length || 0) + 3)"
         />
         <div v-if="props.videos.length > 4" class="tile-overlay cursor-pointer">
           +{{ props.videos.length - 4 }}
@@ -135,8 +135,55 @@
     </div>
   </div>
 
-  <PostCardModal
-    v-if="isOpenPostModal"
+  <div class="modal-overlay" v-if="isOpenPostModal && isPostCreation" @click.self="openPostModal()">
+    <!-- Container -->
+    <div class="modal-container" :style="modalStyles">
+      <div v-if="props.images || props.videos" class="w-full relative">
+        <!-- Navigation arrows - show only if 2+ media items -->
+
+        <!-- Left arrow -->
+        <button
+          type="button"
+          v-if="(props.images?.length || 0) + (props.videos?.length || 0) > 1" 
+          @click.stop="previousImage()"
+          class="nav-arrow nav-arrow-left"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Right arrow -->
+        <button
+          type="button"
+          v-if="(props.images?.length || 0) + (props.videos?.length || 0) > 1" 
+          @click.stop="nextImage()"
+          class="nav-arrow nav-arrow-right"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <ZoomImg v-if="currentMediaIsImage"
+          :src="currentMediaSrc"
+          zoom-type="drag"
+        />
+
+        <video v-if="currentMediaIsVideo"
+          :src="currentMediaSrc"
+          autoplay
+          loop
+          controls
+          playsinline
+        />
+
+        <!-- Todo: Media counter -->
+      </div>
+    </div>
+  </div>
+
+  <PostCardModal v-if="isOpenPostModal && !isPostCreation"
     :avatarUrl="props.avatarUrl"
     :name="props.name"
     :content="props.content"
@@ -148,10 +195,15 @@
 <script setup>
   import { useCreateObjectUrl } from '@/helpers/createObjectUrl';
   import { computed, ref } from 'vue';
-  import PostCardModal from './PostCardModal.vue';
   import { usePostStore } from '@/stores/usePostStore';
+  import { ZoomImg } from 'vue3-zoomer';
+  import PostCardModal from './PostCardModal.vue';
 
   const post = usePostStore();
+  const index = computed({
+    get: () => post.postPreviewIndex,
+    set: (val) => post.getPostPreviewIndex(val),
+  });
 
   const props = defineProps({
     name: { type: String },
@@ -160,6 +212,7 @@
     images: { type: Array, default: () => [] },
     videos: { type: Array, default: () => [] },
     isUrl: { type: Boolean, default: false },
+    isPostCreation: { type: Boolean, default: false }
   });
 
   const isOpenPostModal = ref(false);
@@ -180,9 +233,83 @@
     return [...images, ...videos];
   });
 
-  const openPostModal = (index => {
-    post.getPostPreviewIndex(index);
+  // Get current media based on the selected index
+  const currentMediaSrc = computed(() => {
+    const imageCount = props.images ? props.images.length : 0;
+    
+    if (index.value < imageCount && props.images) {
+      // It's an image
+      return props.isUrl
+        ? props.images[index.value]
+        : useCreateObjectUrl(props.images[index.value]);
+    } else if (props.videos) {
+      // It's a video
+      const videoIndex = index.value - imageCount;
+
+      return props.isUrl
+        ? props.videos[videoIndex]
+        : useCreateObjectUrl(props.videos[videoIndex]);
+    }
+
+    return null;
+  });
+
+  const currentMediaIsImage = computed(() => {
+    const imageCount = props.images ? props.images.length : 0;
+
+    return index.value < imageCount && props.images;
+  });
+
+  const currentMediaIsVideo = computed(() => {
+    const imageCount = props.images ? props.images.length : 0;
+
+    return index.value >= imageCount && props.videos;
+  });
+
+  const modalStyles = computed(() => {
+    const totalMedia = (props.images?.length || 0) + (props.videos?.length || 0);
+    
+    if (totalMedia === 1) {
+      return {
+        maxWidth: '80vw',
+        maxHeight: '80vh',
+        margin: '2rem'
+      };
+    } else if (totalMedia === 2) {
+      return {
+        maxWidth: '85vw',
+        maxHeight: '80vh',
+        margin: '1.5rem'
+      };
+    } else {
+      return {
+        maxWidth: '90vw',
+        maxHeight: '75vh',
+        margin: '1rem'
+      };
+    }
+  });
+
+  const openPostModal = (index) => {
+    // Only update index if provided (when opening modal)
+    if (index !== undefined) {
+      post.getPostPreviewIndex(index);
+    }
 
     isOpenPostModal.value = !isOpenPostModal.value;
-  });
+  };
+
+  const previousImage = () => {
+    if (index.value === 0) return;
+
+    index.value -= 1;
+  };
+
+  const nextImage = () => {
+    const totalMedia = (props.images?.length || 0) + (props.videos?.length || 0);
+
+    if (index.value >= totalMedia - 1) return;
+
+    index.value += 1;
+  };
 </script>

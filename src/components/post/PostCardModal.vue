@@ -20,11 +20,32 @@
       <!-- Body: media left, comments right -->
       <div class="post-modal">
         <div class="post-modal-media">
-          <div v-if="imageUrls.length || videoUrls.length" class="w-full">
-            <img
-              v-if="imageUrls.length"
+          <div v-if="imageUrls.length || videoUrls.length" class="w-full relative">
+            <!-- Navigation arrows - show only if 2+ media items -->
+            <button 
+              v-if="(props.media || []).length > 1"
+              @click.stop="previousImage()"
+              class="nav-arrow nav-arrow-left"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <button 
+              v-if="(props.media || []).length > 1" 
+              @click.stop="nextImage()"
+              class="nav-arrow nav-arrow-right"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <ZoomImg v-if="imageUrls.length"
               :src="imageUrls[postIndex]"
-              class="image-tile image-tile-md"
+              :show-zoom-btns="true"
+              zoom-type="drag"
             />
 
             <video
@@ -36,6 +57,8 @@
               playsinline
               class="image-tile image-tile-md"
             />
+
+            <!-- Todo: Media counter -->
           </div>
         </div>
 
@@ -70,10 +93,11 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, ref } from 'vue';
+  import { computed } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
   import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
   import { usePostStore } from '@/stores/usePostStore';
+  import { ZoomImg } from 'vue3-zoomer';
 
   const emit = defineEmits(['close']);
   const props = defineProps([
@@ -82,12 +106,28 @@
     'content',
     'media',
   ]);
-  const postIndex = ref(0);
   const post = usePostStore();
 
-  onMounted(() => postIndex.value = post.postPreviewIndex);
+  const postIndex = computed({
+    get: () => post.postPreviewIndex,
+    set: (val) => post.getPostPreviewIndex(val),
+  });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
+
+  const previousImage = () => {
+    if (postIndex.value === 0) return;
+
+    postIndex.value -= 1;
+  };
+
+  const nextImage = () => {
+    const totalMedia = (props.media?.length || 0);
+
+    if (postIndex.value >= totalMedia - 1) return;
+
+    postIndex.value += 1;
+  };
 </script>

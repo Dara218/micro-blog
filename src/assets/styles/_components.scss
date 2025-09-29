@@ -135,10 +135,19 @@
   /* Modal styles (media left, comments right) */
   .modal-overlay {
     @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50;
+    @apply overflow-y-auto p-4 md:p-6;
   }
 
   .modal-container {
-    @apply w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden;
+    @apply w-full bg-white rounded-2xl shadow-xl overflow-hidden;
+    @apply max-h-[90vh] flex flex-col mx-auto;
+    /* Wider default width for post modal while keeping margins */
+    max-width: min(96vw, 1200px);
+
+    img, video {
+      @apply max-w-full object-contain mx-auto;
+      max-height: min(80vh, 600px);
+    }
   }
 
   .modal-header {
@@ -151,70 +160,32 @@
 
   .post-modal {
     @apply grid grid-cols-1 md:grid-cols-[1.3fr_1fr];
-    min-height: 70vh;
-    max-height: 85vh;
+    /* Let modal body grow and shrink within container without forcing overflow */
+    flex: 1 1 auto;
+    min-height: 0;
+    @apply overflow-hidden;
   }
 
   .post-modal-media {
     @apply bg-black flex items-center justify-center p-3 md:p-4;
+    @apply overflow-hidden;
   }
 
   .post-modal-media img,
   .post-modal-media video {
-    @apply max-h-[85vh] w-auto h-auto rounded-xl;
+    @apply max-h-[70vh] md:max-h-[75vh] w-auto h-auto rounded-xl;
   }
 
   .post-modal-comments {
     @apply flex flex-col bg-white p-4;
+    min-height: 0;
   }
 
   .comments-scroll {
     @apply flex-1 overflow-y-auto space-y-4 pr-2;
   }
 
-  .comment-item {
-    @apply flex gap-3;
-  }
-  .comment-item .author-avatar {
-    @apply w-9 h-9 rounded-full overflow-hidden flex-shrink-0;
-  }
-
-  .comment-item .author-avatar img {
-    @apply w-full h-full object-cover;
-  }
-
-  .comment-item .comment-body {
-    @apply flex-1;
-  }
-
-  .comment-item .comment-meta {
-    @apply text-sm text-gray-600 mb-1; 
-  }
-
-  .comment-item .comment-name {
-    @apply font-medium text-gray-900;
-  }
-
-  .comment-item .comment-time {
-    @apply text-gray-400 text-xs;
-  }
-
-  .comment-item .comment-text {
-    @apply text-sm text-gray-800;
-  }
-
-  .comment-input {
-    @apply mt-4 pt-3 border-t border-gray-200 flex items-center gap-2;
-  }
-
-  .comment-field {
-    @apply flex-1 p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-[0_0_0_3px_rgba(59,130,246,0.1)];
-  }
-
-  .comment-send {
-    @apply px-3 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition;
-  }
-
+  /* ImagePreview block */
   .image-preview {
     @apply mt-4 w-full max-w-xl;
 
@@ -246,5 +217,74 @@
     .tile-overlay {
       @apply absolute inset-0 bg-black/50 text-white text-2xl font-semibold flex items-center justify-center;
     }
+  }
+
+  /* When ImagePreview is inside a modal, let it use full width and taller tiles */
+  .modal-container .image-preview {
+    @apply max-w-none;
+
+    .image-tile-sm {
+      @apply h-64;
+    }
+
+    .image-tile-md {
+      @apply h-80;
+    }
+
+    .image-tile-lg {
+      height: 480px;
+    }
+  }
+
+  // Zoom Container
+  .zoom-container {
+    @apply w-full h-full;
+    
+    /* Ensure proper touch handling for zoom functionality */
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    
+    /* Prevent context menu on long press */
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  // Navigation arrows for media modal
+  .nav-arrow {
+    @apply absolute top-1/2 transform -translate-y-1/2 z-10;
+    @apply w-12 h-12 bg-black/50 text-white rounded-full;
+    @apply flex items-center justify-center;
+    @apply hover:bg-black/70 transition-colors duration-200;
+    @apply cursor-pointer border-none outline-none;
+
+    svg {
+      @apply w-6 h-6;
+    }
+
+    &:hover {
+      @apply bg-black/70;
+    }
+
+    &:disabled {
+      @apply opacity-50 cursor-not-allowed;
+    }
+  }
+
+  .nav-arrow-left {
+    @apply left-4;
+  }
+
+  .nav-arrow-right {
+    @apply right-4;
+  }
+
+  // Media counter
+  .media-counter {
+    @apply absolute bottom-4 left-1/2 transform -translate-x-1/2;
+    @apply bg-black/70 text-white px-3 py-1 rounded-full text-sm;
+    @apply pointer-events-none z-10;
   }
 }
