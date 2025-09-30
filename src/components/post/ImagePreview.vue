@@ -152,6 +152,11 @@
       )"
     >
       <div v-if="props.images || props.videos" class="w-full relative">
+        <!-- Media counter placeholder (positioned top-right) -->
+        <div class="media-counter">
+          {{ index + 1 }}/{{ props.images ? props.images.length : props.videos.length  }}
+        </div>
+
         <!-- Navigation arrows - show only if 2+ media items -->
 
         <!-- Left arrow -->
@@ -196,8 +201,6 @@
           controls
           playsinline
         />
-
-        <!-- Todo: Media counter -->
       </div>
     </div>
   </div>

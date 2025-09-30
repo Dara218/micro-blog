@@ -7,8 +7,8 @@
       <div class="modal-header"
         tabindex="0"
         ref="modalContainer"
-        @keydown.left="previousImage(postStore, postIndex)"
-        @keydown.right="nextImage(postStore, false, props.media)"
+        @keydown.prevent.stop.left="previousImage(postStore, postIndex)"
+        @keydown.prevent.stop.right="nextImage(postStore, false, props.media)"
       >
         <div class="post-author">
           <div class="author-avatar">
@@ -26,10 +26,15 @@
       <div class="post-modal">
         <div class="post-modal-media">
           <div v-if="imageUrls.length || videoUrls.length" class="w-full relative">
+            <!-- Media counter placeholder (positioned top-right) -->
+            <div class="media-counter">
+              {{ postIndex + 1 }}/{{ props.media.length }}
+            </div>
+
             <!-- Navigation arrows - show only if 2+ media items -->
             <button 
               v-if="(props.media || []).length > 1"
-              @click.stop="previousImage(postStore, postIndex)"
+              @click.prevent.stop="previousImage(postStore, postIndex)"
               class="nav-arrow nav-arrow-left"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -39,7 +44,7 @@
 
             <button 
               v-if="(props.media || []).length > 1" 
-              @click.stop="nextImage(postStore, false, props.media)"
+              @click.prevent.stop="nextImage(postStore, false, props.media)"
               class="nav-arrow nav-arrow-right"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -62,8 +67,6 @@
               playsinline
               class="image-tile image-tile-md"
             />
-
-            <!-- Todo: Media counter -->
           </div>
         </div>
 
