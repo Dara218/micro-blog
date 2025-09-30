@@ -1,10 +1,10 @@
 <template>
   <!-- Modal Overlay -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="closeCreatePostModal(false)">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 md:p-6" @click.self="closeCreatePostModal(false)">
     <!-- Modal Container -->
-    <div class="w-full max-w-2xl rounded-xl bg-white shadow-xl">
+    <div class="w-full max-w-4xl max-h-[90vh] rounded-xl bg-white shadow-xl overflow-hidden flex flex-col">
       <!-- Header -->
-      <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 py-3 flex-none">
         <h3 class="text-base font-semibold text-gray-900">Create Post</h3>
         <button
           type="button"
@@ -13,14 +13,16 @@
       </div>
 
       <!-- Body -->
-      <div class="home-page modal-scope">
-        <section class="feed">
-          <CreatePostForm
-            :userAvatar="props.userAvatar"
-            :userId="props.userId"
-            @new-post="closeCreatePostModal"
-          />
-        </section>
+      <div class="flex-1 overflow-auto">
+        <div class="home-page modal-scope">
+          <section class="feed">
+            <CreatePostForm
+              :userAvatar="props.userAvatar"
+              :userId="props.userId"
+              @new-post="closeCreatePostModal"
+            />
+          </section>
+        </div>
       </div>
     </div>
   </div>

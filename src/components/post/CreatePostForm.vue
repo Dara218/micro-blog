@@ -75,6 +75,7 @@
       :images="form.images"
       :videos="form.videos"
       :isUrl="false"
+      :isPostCreation="true"
       v-if="!v$.images.$error && !v$.videos.$error"
     />
 
