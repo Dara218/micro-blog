@@ -15,6 +15,9 @@ export const API_ENDPOINTS = {
     GET_HOME_POST: id => `/api/post/${id}/home`,
     CREATE_POST: `/api/post/store`,
   },
+  COMMENT: {
+    GET_COMMENTS: id => `api/comment/${id}/get-comments`,
+  },
 };
 
 // // Add other global constants here

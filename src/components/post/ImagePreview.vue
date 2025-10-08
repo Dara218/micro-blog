@@ -154,11 +154,10 @@
       <div v-if="props.images || props.videos" class="w-full relative">
         <!-- Media counter placeholder (positioned top-right) -->
         <div class="media-counter">
-          {{ index + 1 }}/{{ props.images ? props.images.length : props.videos.length  }}
+          {{ index + 1 }}/{{ props.images.length > 1 ? props.images.length : props.videos.length  }}
         </div>
 
         <!-- Navigation arrows - show only if 2+ media items -->
-
         <!-- Left arrow -->
         <button
           type="button"
@@ -211,6 +210,7 @@
     :content="props.content"
     :media="mediaForModal"
     @close="openPostModal()"
+    :comments="props.comments"
   />
 </template>
 
@@ -235,7 +235,8 @@
     images: { type: Array, default: () => [] },
     videos: { type: Array, default: () => [] },
     isUrl: { type: Boolean, default: false },
-    isPostCreation: { type: Boolean, default: false }
+    isPostCreation: { type: Boolean, default: false },
+    comments:{ type: Array, default: () => [] },
   });
 
   const modalContainer = ref(null);
