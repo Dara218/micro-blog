@@ -12,7 +12,7 @@
       >
         <div class="post-author">
           <div class="author-avatar">
-            <img :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
+            <img :src="props.avatarUrl" :alt="props.avatarUrl" />
           </div>
           <div class="author-info">
             <h4 class="author-name">{{ props.name }}</h4>
@@ -82,9 +82,9 @@
           <div class="comments-scroll divide-y divide-gray-200">
             <div v-for="comment in props.comments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
               <div class="author-avatar w-9 h-9 rounded-full overflow-hidden shrink-0">
-                <img class="w-full h-full object-cover" :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
+                <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
               </div>
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-2 flex-1">
                 <div class="comment-body flex-1 min-w-0">
                   <div class="comment-meta flex items-baseline gap-2">
                     <span class="comment-name font-medium truncate">{{ props.name || 'User' }}</span>
@@ -93,12 +93,14 @@
                   <p class="comment-text mt-1 text-gray-800">{{ comment.content }}</p>
                 </div>
                 <PostActions :commentCount="commentRepliesCount[comment.id]"/>
+
+                <Reply :replies="comment.replies"/>
               </div>
             </div>
           </div>
 
-          <div class="comment-input flex items-center gap-2 px-3 py-2 border-t">
-            <textarea class="comment-field resize-none h-16 flex-1 min-w-0" type="text" placeholder="Write a comment..." />
+          <div class="comment-input">
+            <textarea class="comment-field" type="text" placeholder="Write a comment..." />
             <button class="btn-create-post" type="button">Post</button>
           </div>
         </div>
@@ -115,11 +117,11 @@
   import { ZoomImg } from 'vue3-zoomer';
   import { nextImage, previousImage } from '@/composables/usePostMedia';
   import PostActions from './PostActions.vue';
-  import { getPostCommentsByParentId } from '@/services/comment/commentService';
+  import Reply from '../comment/Reply.vue';
 
   const emit = defineEmits(['close']);
   const props = defineProps({
-    avatarUrl: { type: String, default: '' },
+    avatarUrl: { type: String, default: DEFAULT_USER_AVATAR },
     name: { type: String, default: '' },
     content: { type: String, default: '' },
     media: { type: Array, default: () => [] },
@@ -132,35 +134,13 @@
     set: (val) => postStore.getPostPreviewIndex(val),
   });
   const modalContainer = ref(null);
-  let parentIds = ref([]);
   const commentRepliesCount = ref({});
 
   onMounted(async () => {
     modalContainer.value?.focus();
-
-    getRepliesInfo();
   });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
-  
-  const getRepliesInfo = async () => {
-    // Get parent comments id
-    parentIds = props.comments.map(comment => comment.id);
-
-    const count = {};
-
-    for (const id in parentIds) {
-      try {
-        const replies = await getPostCommentsByParentId(id);
-        count[id] = replies.data.comments.length;
-      } catch (error) {
-        console.error(`Failed to fetch replies for comment ${id}`, error);
-        count[id] = 0;
-      }
-    }
-
-    commentRepliesCount.value = count;
-  }
 </script>

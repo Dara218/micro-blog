@@ -285,4 +285,176 @@
   .media-counter {
     @apply absolute top-3 right-3 z-10 bg-black/60 text-white text-xs px-2 py-1 rounded;
   }
+
+  // Reply Threading Styles
+  .replies-container {
+    @apply relative mt-3 ml-0;
+
+    // Main vertical line connecting all replies
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: calc(100% - 12px);
+      background-color: #e5e7eb;
+      margin-left: -10px;
+    }
+  }
+
+  .reply-item {
+    @apply flex items-start gap-0 py-2 relative;
+
+    .reply-connector {
+      @apply w-0 h-8 flex items-center justify-center shrink-0 relative; // match 32px avatar height
+
+      // Horizontal line connecting to avatar
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%); // center on avatar midline
+        left: -6px; // start at avatar edge
+        width: 4px; // slightly overreach to ensure it meets the 12px vertical line without a gap
+        height: 1px;
+        background-color: #e5e7eb;
+      }
+    }
+
+    .author-avatar {
+      @apply w-8 h-8 rounded-full overflow-hidden shrink-0;
+
+      img {
+        @apply w-full h-full object-cover;
+      }
+    }
+
+    .reply-body {
+      @apply flex-1 min-w-0 ml-2;
+
+      .reply-meta {
+        @apply flex items-baseline gap-2;
+
+        .reply-name {
+          @apply font-medium text-sm truncate;
+        }
+
+        .reply-time {
+          @apply text-gray-500 text-xs;
+        }
+      }
+
+      .reply-text {
+        @apply mt-1 text-gray-700 text-sm;
+      }
+    }
+
+    .reply-actions {
+      @apply flex items-center gap-4 mt-1;
+
+      .reply-action-btn {
+        @apply text-gray-500 hover:text-gray-700 transition-colors;
+
+        &.like-btn {
+          @apply flex items-center gap-1;
+
+          span {
+            @apply text-xs;
+          }
+        }
+
+        &.reply-btn {
+          @apply text-xs font-medium;
+        }
+      }
+    }
+  }
+
+  .nested-reply-item {
+    @apply flex items-start gap-0 py-2 ml-2 relative;
+
+    .reply-connector {
+      @apply w-0 h-7 flex items-center justify-center shrink-0 relative; // match 28px avatar height
+
+      // Horizontal line for nested replies
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        width: 14px;
+        height: 1px;
+        background-color: #e5e7eb;
+      }
+    }
+
+    .author-avatar {
+      @apply w-7 h-7 rounded-full overflow-hidden shrink-0;
+
+      img {
+        @apply w-full h-full object-cover;
+      }
+    }
+
+    .reply-body {
+      @apply flex-1 min-w-0;
+
+      .reply-meta {
+        @apply flex items-baseline gap-2;
+
+        .reply-name {
+          @apply font-medium text-sm truncate;
+        }
+
+        .reply-time {
+          @apply text-gray-500 text-xs;
+        }
+      }
+
+      .reply-text {
+        @apply mt-1 text-gray-700 text-sm;
+      }
+    }
+
+    .reply-actions {
+      @apply flex items-center gap-4 mt-1;
+
+      .reply-action-btn {
+        @apply text-gray-500 hover:text-gray-700 transition-colors;
+
+        &.like-btn {
+          @apply flex items-center gap-1;
+
+          span {
+            @apply text-xs;
+          }
+        }
+
+        &.reply-btn {
+          @apply text-xs font-medium;
+        }
+      }
+    }
+  }
+
+  // Comment input styling
+  .comment-input {
+    @apply flex items-center gap-2 px-3 py-2 border-t;
+
+    .comment-field {
+      @apply resize-none h-16 flex-1 min-w-0 border border-gray-200 rounded-lg px-3 py-2;
+      @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+
+      &::placeholder {
+        @apply text-gray-500;
+      }
+    }
+
+    .btn-create-post {
+      @apply bg-blue-500 text-white px-4 py-2 rounded-lg font-medium;
+      @apply hover:bg-blue-600 transition-colors;
+    }
+  }
 }

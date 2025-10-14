@@ -3,7 +3,7 @@
     <div class="post-header">
       <div class="post-author">
         <div class="author-avatar">
-          <img :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
+          <img :src="props.avatarUrl" :alt="props.avatarUrl" />
         </div>
         <div class="author-info">
           <h4 class="author-name">{{ props.name }}</h4>
@@ -45,21 +45,21 @@
   import ImagePreview from './ImagePreview.vue';
   import PostActions from './PostActions.vue';
 
-  const props = defineProps([
-    'avatarUrl',
-    'name',
-    'content',
-    'media',
-    'commentCount',
-    'authUserId',
-    'postUserId',
-    'comments',
-  ]);
+  const props = defineProps({
+    avatarUrl: { type: String, default: DEFAULT_USER_AVATAR },
+    name: { type: String, default: '' },
+    content: { type: String, default: '' },
+    media: { type: Array, default: [] },
+    commentCount: { type: Number, default: 0 },
+    authUserId: { type: Number },
+    postUserId: { type: Number },
+    comments: { type: Array, default: [] },
+  });
   const isOwnPost = ref(false);
 
   onMounted(() => isOwnPost.value = props.authUserId === props.postUserId);
 
-  const parts = computed(() => usePartitionMedia(props.media || []));
+  const parts = computed(() => usePartitionMedia(props.media));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
 </script>
