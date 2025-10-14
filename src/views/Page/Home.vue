@@ -44,7 +44,7 @@
           <!-- Create new post form -->
           <CreatePostForm
             :userAvatar="avatarUrl"
-            :userId="auth.user.id"
+            :userId="userId"
             @new-post="prependNewPost"
           />
 
@@ -55,6 +55,10 @@
               :name="homePost.user?.name"
               :content="homePost.content"
               :media="homePost.media"
+              :commentCount="homePost.comment_count"
+              :comments="homePost.comments"
+              :authUserId="userId"
+              :postUserId="homePost.user_id"
             />
           </div>
         </section>
@@ -67,7 +71,7 @@
 
   <CreatePostModal
     :userAvatar="avatarUrl"
-    :userId ="auth.user.id"
+    :userId ="userId"
     @new-post="toggleCreatePostModal"
     v-if="isCreatePostModalOpen"
   />
@@ -98,17 +102,18 @@
 
   const auth = useAuthStore();
   const avatarUrl = computed(() => auth.user.avatar_url || DEFAULT_USER_AVATAR);
+  const userId = ref(1);
 
   onMounted(async () => {
     try {
       await auth.getAuthenticatedUser();
-      const userId = auth.user.id;
+      userId.value = Number(auth.user.id);
 
       // Get the posts of the authenticated user + friends post
-      const initialHomePosts = await getHomePost(userId);
+      const initialHomePosts = await getHomePost(userId.value);
 
       // Get the authenticated user's stats (posts, followers, and following counts)
-      const initialUserStats = await getUserStats(userId);
+      const initialUserStats = await getUserStats(userId.value);
 
       homePosts.value = initialHomePosts.data.posts;
       userStats.value = initialUserStats.data.user;

@@ -12,14 +12,18 @@
       >
         <div class="post-author">
           <div class="author-avatar">
-            <img :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
+            <img :src="props.avatarUrl" :alt="props.avatarUrl" />
           </div>
           <div class="author-info">
             <h4 class="author-name">{{ props.name }}</h4>
             <p class="post-meta">@janesmith • 2h ago</p>
           </div>
         </div>
-        <button class="modal-close" type="button" @click="emit('close')">×</button>
+
+        <button
+          class="modal-close"
+          type="button"
+          @click="emit('close')">×</button>
       </div>
 
       <!-- Body: media left, comments right -->
@@ -75,24 +79,29 @@
             <p class="post-text">{{ props.content }}</p>
           </div>
 
-          <div class="comments-scroll">
-            <div class="comment-item" v-for="i in 10" :key="i">
-              <div class="author-avatar">
-                <img :src="props.avatarUrl ?? DEFAULT_USER_AVATAR" :alt="props.avatarUrl" />
+          <div class="comments-scroll divide-y divide-gray-200">
+            <div v-for="comment in props.comments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
+              <div class="author-avatar w-9 h-9 rounded-full overflow-hidden shrink-0">
+                <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
               </div>
-              <div class="comment-body">
-                <div class="comment-meta">
-                  <span class="comment-name">{{ props.name || 'User' }}</span>
-                  <span class="comment-time">• 1h</span>
+              <div class="flex flex-col gap-2 flex-1">
+                <div class="comment-body flex-1 min-w-0">
+                  <div class="comment-meta flex items-baseline gap-2">
+                    <span class="comment-name font-medium truncate">{{ props.name || 'User' }}</span>
+                    <span class="comment-time text-gray-500 text-sm">• 1h</span>
+                  </div>
+                  <p class="comment-text mt-1 text-gray-800">{{ comment.content }}</p>
                 </div>
-                <p class="comment-text">Nice shot! Love this.</p>
+                <PostActions :commentCount="commentRepliesCount[comment.id]"/>
+
+                <Reply :replies="comment.replies"/>
               </div>
             </div>
           </div>
 
           <div class="comment-input">
-            <input class="comment-field" type="text" placeholder="Write a comment..." />
-            <button class="comment-send" type="button">Post</button>
+            <textarea class="comment-field" type="text" placeholder="Write a comment..." />
+            <button class="btn-create-post" type="button">Post</button>
           </div>
         </div>
       </div>
@@ -107,22 +116,29 @@
   import { usePostStore } from '@/stores/usePostStore';
   import { ZoomImg } from 'vue3-zoomer';
   import { nextImage, previousImage } from '@/composables/usePostMedia';
+  import PostActions from './PostActions.vue';
+  import Reply from '../comment/Reply.vue';
 
   const emit = defineEmits(['close']);
-  const props = defineProps([
-    'avatarUrl',
-    'name',
-    'content',
-    'media',
-  ]);
+  const props = defineProps({
+    avatarUrl: { type: String, default: DEFAULT_USER_AVATAR },
+    name: { type: String, default: '' },
+    content: { type: String, default: '' },
+    media: { type: Array, default: () => [] },
+    comments: { type: Array, default: () => [] },
+  });
+
   const postStore = usePostStore();
   const postIndex = computed({
     get: () => postStore.postPreviewIndex,
     set: (val) => postStore.getPostPreviewIndex(val),
   });
   const modalContainer = ref(null);
+  const commentRepliesCount = ref({});
 
-  onMounted(() => modalContainer.value?.focus());
+  onMounted(async () => {
+    modalContainer.value?.focus();
+  });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
