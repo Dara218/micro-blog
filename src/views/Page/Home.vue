@@ -99,7 +99,6 @@
 
   const homePosts = ref([]);
   const userStats = ref({});
-  const isOwnPost = ref(false);
 
   const auth = useAuthStore();
   const avatarUrl = computed(() => auth.user.avatar_url || DEFAULT_USER_AVATAR);
@@ -112,9 +111,6 @@
 
       // Get the posts of the authenticated user + friends post
       const initialHomePosts = await getHomePost(userId.value);
-
-      // Debugging
-      // console.log(initialHomePosts.data.posts[0]);
 
       // Get the authenticated user's stats (posts, followers, and following counts)
       const initialUserStats = await getUserStats(userId.value);
