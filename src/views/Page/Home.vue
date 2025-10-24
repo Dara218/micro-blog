@@ -165,10 +165,17 @@
   };
 
   const updateReplyLike = (replyData) => {
-    // Find the post that contains the updated reply
+    // Find the post that contains the updated comment or reply
     for (const post of homePosts.value) {
       if (post.comments) {
         for (const comment of post.comments) {
+          // Update the comment itself if we have data for it
+          if (replyData[comment.id]) {
+            comment.like_count = replyData[comment.id].likeCount;
+            comment.is_liked = replyData[comment.id].isLiked;
+          }
+          
+          // Update nested replies
           if (comment.replies && comment.replies.length > 0) {
             updateNestedReplies(comment.replies, replyData);
           }

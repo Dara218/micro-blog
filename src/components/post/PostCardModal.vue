@@ -96,11 +96,11 @@
                 <PostActions
                   :authUserId="props.authUserId"
                   :commentCount="commentRepliesCount[comment.id]"
-                  :likeCount="latestLikeCount"
-                  :postId="props.postId"
-                  :isLiked="latestLikeStatus"
+                  :likeCount="comment.like_count || 0"
+                  :postId="comment.id"
+                  :isLiked="comment.is_liked || false"
                   type="comment"
-                  @like-updated="handleLikeUpdate"
+                  @like-updated="(likeData) => handleCommentLikeUpdate(comment.id, likeData)"
                 />
                 <!-- Replies section -->
                 <div v-for="reply in comment.replies" :key="reply.id">
@@ -177,15 +177,22 @@
     }
   };
 
-  // Computed property that merges props.comments with reply like updates
+  // Computed property that merges props.comments with comment and reply like updates
   const localComments = computed(() => {
     if (!props.comments || props.comments.length === 0) return [];
     
     // Deep clone to avoid mutating props
     const clonedComments = JSON.parse(JSON.stringify(props.comments));
     
-    // Apply reply like updates recursively
+    // Apply like updates to comments and their replies
     for (const comment of clonedComments) {
+      // Update the comment itself if we have an update for it
+      if (replyLikeUpdates.value[comment.id]) {
+        comment.like_count = replyLikeUpdates.value[comment.id].likeCount;
+        comment.is_liked = replyLikeUpdates.value[comment.id].isLiked;
+      }
+      
+      // Apply reply like updates recursively
       if (comment.replies && comment.replies.length > 0) {
         updateReplyLikes(comment.replies);
       }
@@ -222,6 +229,14 @@
     latestLikeStatus.value = likeData.isLiked;
     latestLikeCount.value = likeData.likeCount;
     hasLikeChanged.value = true;
+  };
+
+  const handleCommentLikeUpdate = (commentId, likeData) => {
+    // Store comment like updates - the computed property will merge these
+    replyLikeUpdates.value[commentId] = {
+      likeCount: likeData.likeCount,
+      isLiked: likeData.isLiked
+    };
   };
 
   const handleReplyLikeUpdate = (likeData) => {
