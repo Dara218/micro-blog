@@ -72,6 +72,7 @@
 
     <!-- Media preview -->
     <ImagePreview
+      :authUserId="props.userId"
       :images="form.images"
       :videos="form.videos"
       :isUrl="false"
@@ -114,11 +115,12 @@
   import { ref } from 'vue';
   import { useCreatePost } from '@/composables/useCreatePost';
   import ImagePreview from './ImagePreview.vue';
+  import { DEFAULT_USER_AVATAR } from '@/constants';
 
-  const props = defineProps([
-    'userAvatar',
-    'userId',
-  ]);
+  const props = defineProps({
+    userAvatar: { type: String, default: DEFAULT_USER_AVATAR },
+    userId: { type: Number, default: null },
+  });
   const emit = defineEmits(['new-post']);
 
   const serverError = ref('');

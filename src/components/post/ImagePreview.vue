@@ -205,12 +205,18 @@
   </div>
 
   <PostCardModal v-if="isOpenPostModal && !isPostCreation"
+    :authUserId="props.authUserId"
     :avatarUrl="props.avatarUrl"
     :name="props.name"
     :content="props.content"
     :media="mediaForModal"
-    @close="openPostModal()"
     :comments="props.comments"
+    :likeCount="props.likeCount"
+    :postId="props.postId"
+    :isLiked="props.isLiked"
+    @close="openPostModal()"
+    @like-updated="(likeData) => $emit('like-updated', likeData)"
+    @reply-like-updated="(replyData) => $emit('reply-like-updated', replyData)"
   />
 </template>
 
@@ -222,6 +228,8 @@
   import { ZoomImg } from 'vue3-zoomer';
   import PostCardModal from './PostCardModal.vue';
 
+  defineEmits(['like-updated', 'reply-like-updated']);
+
   const postStore = usePostStore();
   const index = computed({
     get: () => postStore.postPreviewIndex,
@@ -229,6 +237,7 @@
   });
 
   const props = defineProps({
+    authUserId: { type: Number, default: null },
     name: { type: String },
     avatarUrl: { type: String },
     content: { type: String },
@@ -237,6 +246,9 @@
     isUrl: { type: Boolean, default: false },
     isPostCreation: { type: Boolean, default: false },
     comments:{ type: Array, default: () => [] },
+    likeCount: { type: Number, default: 0 },
+    postId: { type: Number },
+    isLiked: { type: Boolean, default: false },
   });
 
   const modalContainer = ref(null);

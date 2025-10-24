@@ -59,6 +59,11 @@
               :comments="homePost.comments"
               :authUserId="userId"
               :postUserId="homePost.user_id"
+              :postId="homePost.id"
+              :likeCount="homePost.like_count"
+              :isLiked="homePost.is_liked"
+              @like-updated="updatePostLike"
+              @reply-like-updated="updateReplyLike"
             />
           </div>
         </section>
@@ -131,4 +136,50 @@
   };
 
   const prependNewPost = (newPost) => homePosts.value.unshift(newPost);
+
+  const updatePostLike = (likeData) => {
+    const post = homePosts.value.find(p => p.id === likeData.postId);
+    if (post) {
+      post.like_count = likeData.likeCount;
+      post.is_liked = likeData.isLiked;
+    }
+  };
+
+  // Recursive function to update nested replies at any depth
+  const updateNestedReplies = (replies, replyData) => {
+    if (!replies || replies.length === 0) return;
+    
+    for (const reply of replies) {
+      // Update this reply if we have data for it
+      if (replyData[reply.id]) {
+        reply.like_count = replyData[reply.id].likeCount;
+        reply.is_liked = replyData[reply.id].isLiked;
+      }
+      
+      // Recursively update nested replies
+      if (reply.replies && reply.replies.length > 0) {
+        updateNestedReplies(reply.replies, replyData);
+      }
+    }
+  };
+
+  const updateReplyLike = (replyData) => {
+    // Find the post that contains the updated comment or reply
+    for (const post of homePosts.value) {
+      if (post.comments) {
+        for (const comment of post.comments) {
+          // Update the comment itself if we have data for it
+          if (replyData[comment.id]) {
+            comment.like_count = replyData[comment.id].likeCount;
+            comment.is_liked = replyData[comment.id].isLiked;
+          }
+          
+          // Update nested replies
+          if (comment.replies && comment.replies.length > 0) {
+            updateNestedReplies(comment.replies, replyData);
+          }
+        }
+      }
+    }
+  };
 </script>

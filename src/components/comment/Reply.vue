@@ -14,18 +14,14 @@
         </div>
         <p class="reply-text">{{ reply.content }}</p>
         <div class="reply-actions">
-          <button class="reply-action-btn like-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span>3</span>
-          </button>
+          <PostActions
+            :authUserId="props.authUserId"
+            :likeCount="reply.like_count || 0"
+            :postId="reply.id"
+            :isLiked="reply.is_liked || false"
+            type="comment"
+            @like-updated="(likeData) => $emit('reply-like-updated', { replyId: reply.id, ...likeData })"
+          />
           <button class="reply-action-btn reply-btn">
             Reply
           </button>
@@ -35,6 +31,8 @@
         <Reply
           v-if="reply.replies && reply.replies.length"
           :replies="reply.replies"
+          :authUserId="props.authUserId"
+          @reply-like-updated="(likeData) => $emit('reply-like-updated', likeData)"
           class="nested-replies ml-2"
         />
       </div>
@@ -43,10 +41,13 @@
 </template>
 
 <script setup>
-
   import { DEFAULT_USER_AVATAR } from '@/constants';
+  import PostActions from '../post/PostActions.vue';
+
+  const emit = defineEmits(['reply-like-updated']);
 
   const props = defineProps({
+    authUserId: { type: Number, default: null },
     replies: { type: Array, default: [] },
   })
 </script>

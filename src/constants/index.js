@@ -18,6 +18,10 @@ export const API_ENDPOINTS = {
   COMMENT: {
     GET_COMMENTS: id => `api/comment/${id}/get-comments`,
   },
+  LIKE: {
+    POST_LIKE: `api/like/process`,
+    GET_BY_ID_AND_USER_ID: (id, userId) => `api/like/get/${id}/${userId}`,
+  },
 };
 
 // // Add other global constants here
