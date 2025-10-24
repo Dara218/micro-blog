@@ -83,7 +83,6 @@
 </template>
 
 <script setup>
-  // Add post actions on video/photo that have no captions
   // Vue core
   import { computed, onMounted, ref } from 'vue';
 
