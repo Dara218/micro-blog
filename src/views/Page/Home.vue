@@ -59,6 +59,10 @@
               :comments="homePost.comments"
               :authUserId="userId"
               :postUserId="homePost.user_id"
+              :postId="homePost.id"
+              :likeCount="homePost.like_count"
+              :isLiked="homePost.is_liked"
+              @like-updated="updatePostLike"
             />
           </div>
         </section>
@@ -131,4 +135,12 @@
   };
 
   const prependNewPost = (newPost) => homePosts.value.unshift(newPost);
+
+  const updatePostLike = (likeData) => {
+    const post = homePosts.value.find(p => p.id === likeData.postId);
+    if (post) {
+      post.like_count = likeData.likeCount;
+      post.is_liked = likeData.isLiked;
+    }
+  };
 </script>

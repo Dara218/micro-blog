@@ -1,6 +1,6 @@
 <template>
   <!-- Overlay -->
-  <div class="modal-overlay" @click.self="emit('close')">
+  <div class="modal-overlay" @click.self="closeModal">
     <!-- Container -->
     <div class="modal-container" >
       <!-- Header -->
@@ -23,7 +23,7 @@
         <button
           class="modal-close"
           type="button"
-          @click="emit('close')">×</button>
+          @click="closeModal">×</button>
       </div>
 
       <!-- Body: media left, comments right -->
@@ -92,8 +92,16 @@
                   </div>
                   <p class="comment-text mt-1 text-gray-800">{{ comment.content }}</p>
                 </div>
-                <PostActions :commentCount="commentRepliesCount[comment.id]"/>
-
+                <!-- Post actions -->
+                <PostActions
+                  :authUserId="props.authUserId"
+                  :commentCount="commentRepliesCount[comment.id]"
+                  :likeCount="latestLikeCount"
+                  :postId="props.postId"
+                  :isLiked="latestLikeStatus"
+                  @like-updated="handleLikeUpdate"
+                />
+                <!-- Replies section -->
                 <Reply :replies="comment.replies"/>
               </div>
             </div>
@@ -118,15 +126,22 @@
   import { nextImage, previousImage } from '@/composables/usePostMedia';
   import PostActions from './PostActions.vue';
   import Reply from '../comment/Reply.vue';
+  import { useGetLikeInfo } from '@/composables/useLikePost';
 
-  const emit = defineEmits(['close']);
+  const emit = defineEmits(['close', 'like-updated']);
   const props = defineProps({
+    authUserId: { type: Number, default: null },
     avatarUrl: { type: String, default: DEFAULT_USER_AVATAR },
     name: { type: String, default: '' },
     content: { type: String, default: '' },
     media: { type: Array, default: () => [] },
     comments: { type: Array, default: () => [] },
+    postId: { type: Number },
   });
+
+  const latestLikeStatus = ref(false);
+  const latestLikeCount = ref(0);
+  const hasLikeChanged = ref(false);
 
   const postStore = usePostStore();
   const postIndex = computed({
@@ -138,9 +153,44 @@
 
   onMounted(async () => {
     modalContainer.value?.focus();
+    await getLikeInfo();
   });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
+
+  const getLikeInfo = async () => {
+    try {
+      const { data } = await useGetLikeInfo(props.postId, props.authUserId);
+      const like = data?.data ?? null; // like is an object or null
+
+      // true if a like exists, false otherwise
+      latestLikeStatus.value = like.deleted_at === null;
+
+      // safe like_count, default to 0 if no like
+      latestLikeCount.value = like?.likeable?.like_count ?? 0;
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleLikeUpdate = (likeData) => {
+    latestLikeStatus.value = likeData.isLiked;
+    latestLikeCount.value = likeData.likeCount;
+    hasLikeChanged.value = true;
+  };
+
+  const closeModal = () => {
+    if (hasLikeChanged.value) {
+      emit('like-updated', {
+        postId: props.postId,
+        likeCount: latestLikeCount.value,
+        isLiked: latestLikeStatus.value
+      });
+    }
+    emit('close');
+  };
 </script>

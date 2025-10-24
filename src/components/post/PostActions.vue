@@ -1,7 +1,8 @@
 <template>
   <div class="post-actions">
-    <button class="action-btn">
+    <button class="action-btn" @click="toggleLike">
       <svg
+        :class="isLiked ? 'text-red-500' : ''"
         class="w-5 h-5"
         fill="none"
         stroke="currentColor"
@@ -13,7 +14,7 @@
           d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
         </path>
       </svg>
-      <span>24</span>
+      <span>{{ likeCount }}</span>
     </button>
     <button class="action-btn">
       <svg
@@ -49,7 +50,52 @@
 </template>
 
 <script setup>
+  import { ref, watch } from 'vue';
+  import { useLikePost } from '@/composables/useLikePost';
+
+  const emit = defineEmits(['like-updated']);
+
   const props = defineProps({
-    commentCount: { type: Number, default: 0 }
+    authUserId: { type: Number },
+    commentCount: { type: Number, default: 0 },
+    likeCount: { type: Number, default: 0 },
+    postId: { type: Number },
+    isLiked: { type: Boolean, default: false },
   });
+
+  const isLiked = ref(props.isLiked);
+  const likeCount = ref(props.likeCount);
+
+  // Watch for prop changes from parent
+  watch(() => props.likeCount, (newVal) => {
+    likeCount.value = newVal;
+  });
+
+  watch(() => props.isLiked, (newVal) => {
+    isLiked.value = newVal;
+  });
+
+  const toggleLike = async () => {
+    const originalLikeCount = likeCount.value;
+    const originalLikeStatus = isLiked.value;
+
+    try {
+      isLiked.value = !isLiked.value;
+      likeCount.value += isLiked.value ? 1 : -1;
+
+      await useLikePost(props.authUserId, props.postId, 'post');
+
+      // Emit the updated like data to parent
+      emit('like-updated', {
+        postId: props.postId,
+        likeCount: likeCount.value,
+        isLiked: isLiked.value
+      });
+    } catch (error) {
+      console.error(error);
+
+      likeCount.value = originalLikeCount;
+      isLiked.value = originalLikeStatus;
+    }
+  };
 </script>
