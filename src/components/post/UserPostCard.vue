@@ -35,6 +35,7 @@
           :postId="props.postId"
           :isLiked="props.isLiked"
           @like-updated="(likeData) => $emit('like-updated', likeData)"
+          @reply-like-updated="(replyData) => $emit('reply-like-updated', replyData)"
         />
       </div>
     </div>
@@ -57,7 +58,7 @@
   import ImagePreview from './ImagePreview.vue';
   import PostActions from './PostActions.vue';
 
-  defineEmits(['like-updated']);
+  defineEmits(['like-updated', 'reply-like-updated']);
 
   const props = defineProps({
     authUserId: { type: Number, default: null },

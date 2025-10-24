@@ -31,7 +31,7 @@
       </svg>
       <span >{{ props.commentCount }}</span>
     </button>
-    <button class="action-btn">
+    <button v-if="props.type === 'post'" class="action-btn">
       <svg
         class="w-5 h-5"
         fill="none"
@@ -61,6 +61,7 @@
     likeCount: { type: Number, default: 0 },
     postId: { type: Number },
     isLiked: { type: Boolean, default: false },
+    type: { type: String, default: 'post' },
   });
 
   const isLiked = ref(props.isLiked);
@@ -69,11 +70,11 @@
   // Watch for prop changes from parent
   watch(() => props.likeCount, (newVal) => {
     likeCount.value = newVal;
-  });
+  }, { immediate: true });
 
   watch(() => props.isLiked, (newVal) => {
     isLiked.value = newVal;
-  });
+  }, { immediate: true });
 
   const toggleLike = async () => {
     const originalLikeCount = likeCount.value;
@@ -83,7 +84,7 @@
       isLiked.value = !isLiked.value;
       likeCount.value += isLiked.value ? 1 : -1;
 
-      await useLikePost(props.authUserId, props.postId, 'post');
+      await useLikePost(props.authUserId, props.postId, props.type);
 
       // Emit the updated like data to parent
       emit('like-updated', {

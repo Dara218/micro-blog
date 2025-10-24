@@ -216,6 +216,7 @@
     :isLiked="props.isLiked"
     @close="openPostModal()"
     @like-updated="(likeData) => $emit('like-updated', likeData)"
+    @reply-like-updated="(replyData) => $emit('reply-like-updated', replyData)"
   />
 </template>
 
@@ -227,7 +228,7 @@
   import { ZoomImg } from 'vue3-zoomer';
   import PostCardModal from './PostCardModal.vue';
 
-  defineEmits(['like-updated']);
+  defineEmits(['like-updated', 'reply-like-updated']);
 
   const postStore = usePostStore();
   const index = computed({

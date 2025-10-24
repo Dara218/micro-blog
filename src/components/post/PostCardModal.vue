@@ -80,7 +80,7 @@
           </div>
 
           <div class="comments-scroll divide-y divide-gray-200">
-            <div v-for="comment in props.comments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
+            <div v-for="comment in localComments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
               <div class="author-avatar w-9 h-9 rounded-full overflow-hidden shrink-0">
                 <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
               </div>
@@ -99,10 +99,17 @@
                   :likeCount="latestLikeCount"
                   :postId="props.postId"
                   :isLiked="latestLikeStatus"
+                  type="comment"
                   @like-updated="handleLikeUpdate"
                 />
                 <!-- Replies section -->
-                <Reply :replies="comment.replies"/>
+                <div v-for="reply in comment.replies" :key="reply.id">
+                  <Reply
+                    :replies="[reply]"
+                    :authUserId="props.authUserId"
+                    @reply-like-updated="handleReplyLikeUpdate"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -124,11 +131,11 @@
   import { usePostStore } from '@/stores/usePostStore';
   import { ZoomImg } from 'vue3-zoomer';
   import { nextImage, previousImage } from '@/composables/usePostMedia';
+  import { useGetLikeInfo } from '@/composables/useLikePost';
   import PostActions from './PostActions.vue';
   import Reply from '../comment/Reply.vue';
-  import { useGetLikeInfo } from '@/composables/useLikePost';
 
-  const emit = defineEmits(['close', 'like-updated']);
+  const emit = defineEmits(['close', 'like-updated', 'reply-like-updated']);
   const props = defineProps({
     authUserId: { type: Number, default: null },
     avatarUrl: { type: String, default: DEFAULT_USER_AVATAR },
@@ -142,6 +149,7 @@
   const latestLikeStatus = ref(false);
   const latestLikeCount = ref(0);
   const hasLikeChanged = ref(false);
+  const replyLikeUpdates = ref({});
 
   const postStore = usePostStore();
   const postIndex = computed({
@@ -150,6 +158,41 @@
   });
   const modalContainer = ref(null);
   const commentRepliesCount = ref({});
+
+  // Recursive function to update reply likes at any nesting level
+  const updateReplyLikes = (replies) => {
+    if (!replies || replies.length === 0) return;
+    
+    for (const reply of replies) {
+      // Update this reply if we have an update for it
+      if (replyLikeUpdates.value[reply.id]) {
+        reply.like_count = replyLikeUpdates.value[reply.id].likeCount;
+        reply.is_liked = replyLikeUpdates.value[reply.id].isLiked;
+      }
+      
+      // Recursively update nested replies
+      if (reply.replies && reply.replies.length > 0) {
+        updateReplyLikes(reply.replies);
+      }
+    }
+  };
+
+  // Computed property that merges props.comments with reply like updates
+  const localComments = computed(() => {
+    if (!props.comments || props.comments.length === 0) return [];
+    
+    // Deep clone to avoid mutating props
+    const clonedComments = JSON.parse(JSON.stringify(props.comments));
+    
+    // Apply reply like updates recursively
+    for (const comment of clonedComments) {
+      if (comment.replies && comment.replies.length > 0) {
+        updateReplyLikes(comment.replies);
+      }
+    }
+    
+    return clonedComments;
+  });
 
   onMounted(async () => {
     modalContainer.value?.focus();
@@ -166,14 +209,12 @@
       const like = data?.data ?? null; // like is an object or null
 
       // true if a like exists, false otherwise
-      latestLikeStatus.value = like.deleted_at === null;
+      latestLikeStatus.value = like?.deleted_at === null;
 
       // safe like_count, default to 0 if no like
       latestLikeCount.value = like?.likeable?.like_count ?? 0;
-
-      console.log(data);
     } catch (error) {
-      console.error(error);
+      console.error(error.response?.data.message);
     }
   };
 
@@ -181,6 +222,14 @@
     latestLikeStatus.value = likeData.isLiked;
     latestLikeCount.value = likeData.likeCount;
     hasLikeChanged.value = true;
+  };
+
+  const handleReplyLikeUpdate = (likeData) => {
+    // Store reply like updates - the computed property will merge these with props.comments
+    replyLikeUpdates.value[likeData.replyId] = {
+      likeCount: likeData.likeCount,
+      isLiked: likeData.isLiked
+    };
   };
 
   const closeModal = () => {
@@ -191,6 +240,12 @@
         isLiked: latestLikeStatus.value
       });
     }
+    
+    // Emit reply like updates if any
+    if (Object.keys(replyLikeUpdates.value).length > 0) {
+      emit('reply-like-updated', replyLikeUpdates.value);
+    }
+    
     emit('close');
   };
 </script>

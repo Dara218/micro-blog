@@ -63,6 +63,7 @@
               :likeCount="homePost.like_count"
               :isLiked="homePost.is_liked"
               @like-updated="updatePostLike"
+              @reply-like-updated="updateReplyLike"
             />
           </div>
         </section>
@@ -82,6 +83,7 @@
 </template>
 
 <script setup>
+  // Add post actions on video/photo that have no captions
   // Vue core
   import { computed, onMounted, ref } from 'vue';
 
@@ -141,6 +143,37 @@
     if (post) {
       post.like_count = likeData.likeCount;
       post.is_liked = likeData.isLiked;
+    }
+  };
+
+  // Recursive function to update nested replies at any depth
+  const updateNestedReplies = (replies, replyData) => {
+    if (!replies || replies.length === 0) return;
+    
+    for (const reply of replies) {
+      // Update this reply if we have data for it
+      if (replyData[reply.id]) {
+        reply.like_count = replyData[reply.id].likeCount;
+        reply.is_liked = replyData[reply.id].isLiked;
+      }
+      
+      // Recursively update nested replies
+      if (reply.replies && reply.replies.length > 0) {
+        updateNestedReplies(reply.replies, replyData);
+      }
+    }
+  };
+
+  const updateReplyLike = (replyData) => {
+    // Find the post that contains the updated reply
+    for (const post of homePosts.value) {
+      if (post.comments) {
+        for (const comment of post.comments) {
+          if (comment.replies && comment.replies.length > 0) {
+            updateNestedReplies(comment.replies, replyData);
+          }
+        }
+      }
     }
   };
 </script>
