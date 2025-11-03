@@ -91,6 +91,17 @@
             <p class="post-text">{{ props.content }}</p>
           </div>
 
+          <!-- Post actions -->
+          <PostActions
+            :authUserId="props.authUserId"
+            :commentCount="props.comments.length"
+            :likeCount="props.likeCount"
+            :postId="props.postId"
+            :isLiked="props.isLiked"
+            type="post"
+            @like-updated="(likeData) => $emit('like-updated', likeData)"
+          />
+
           <div class="comments-scroll divide-y divide-gray-200">
             <div v-for="comment in localComments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
               <div class="author-avatar w-9 h-9 rounded-full overflow-hidden shrink-0">
@@ -156,6 +167,8 @@
     media: { type: Array, default: () => [] },
     comments: { type: Array, default: () => [] },
     postId: { type: Number },
+    isLiked: { type: Boolean, default: false },
+    likeCount: { type: Number, default: 0 },
   });
 
   const latestLikeStatus = ref(false);
@@ -235,12 +248,6 @@
     } catch (error) {
       console.error(error.response?.data.message);
     }
-  };
-
-  const handleLikeUpdate = (likeData) => {
-    latestLikeStatus.value = likeData.isLiked;
-    latestLikeCount.value = likeData.likeCount;
-    hasLikeChanged.value = true;
   };
 
   const handleCommentLikeUpdate = (commentId, likeData) => {
