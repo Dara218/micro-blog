@@ -94,7 +94,7 @@
           <!-- Post actions -->
           <PostActions
             :authUserId="props.authUserId"
-            :commentCount="props.comments.length"
+            :commentCount="commentCount"
             :likeCount="props.likeCount"
             :postId="props.postId"
             :isLiked="props.isLiked"
@@ -138,8 +138,13 @@
           </div>
 
           <div class="comment-input">
-            <textarea class="comment-field" type="text" placeholder="Write a comment..." />
-            <button class="btn-create-post" type="button">Post</button>
+            <textarea 
+              v-model="comment"
+              class="comment-field"
+              type="text"
+              placeholder="Write a comment..."
+            />
+            <button class="btn-create-post" type="button" @click="submitComment">Post</button>
           </div>
         </div>
       </div>
@@ -155,6 +160,7 @@
   import { ZoomImg } from 'vue3-zoomer';
   import { nextImage, previousImage } from '@/composables/usePostMedia';
   import { useGetLikeInfo } from '@/composables/useLikePost';
+  import { buildPostFormData, createComment } from '@/services/comment/commentService';
   import PostActions from './PostActions.vue';
   import Reply from '../comment/Reply.vue';
 
@@ -166,7 +172,7 @@
     content: { type: String, default: '' },
     media: { type: Array, default: () => [] },
     comments: { type: Array, default: () => [] },
-    postId: { type: Number },
+    postId: { type: Number, default: 0 },
     isLiked: { type: Boolean, default: false },
     likeCount: { type: Number, default: 0 },
   });
@@ -175,6 +181,9 @@
   const latestLikeCount = ref(0);
   const hasLikeChanged = ref(false);
   const replyLikeUpdates = ref({});
+  const comment = ref(null);
+  const comments = ref(props.comments);
+  const commentCount = ref(comments.value.length);
 
   const postStore = usePostStore();
   const postIndex = computed({
@@ -204,10 +213,10 @@
 
   // Computed property that merges props.comments with comment and reply like updates
   const localComments = computed(() => {
-    if (!props.comments || props.comments.length === 0) return [];
+    if (!comments.value || comments.value.length === 0) return [];
     
     // Deep clone to avoid mutating props
-    const clonedComments = JSON.parse(JSON.stringify(props.comments));
+    const clonedComments = JSON.parse(JSON.stringify(comments.value));
     
     // Apply like updates to comments and their replies
     for (const comment of clonedComments) {
@@ -254,7 +263,7 @@
     // Store comment like updates - the computed property will merge these
     replyLikeUpdates.value[commentId] = {
       likeCount: likeData.likeCount,
-      isLiked: likeData.isLiked
+      isLiked: likeData.isLiked,
     };
   };
 
@@ -262,7 +271,7 @@
     // Store reply like updates - the computed property will merge these with props.comments
     replyLikeUpdates.value[likeData.replyId] = {
       likeCount: likeData.likeCount,
-      isLiked: likeData.isLiked
+      isLiked: likeData.isLiked,
     };
   };
 
@@ -281,5 +290,25 @@
     }
     
     emit('close');
+  };
+
+  const submitComment = async () => {
+    try {
+      const form = buildPostFormData({
+        content: comment.value,
+        post_id: props.postId,
+        user_id: props.authUserId,
+        like_count: 0,
+      });
+
+      const { data } = await createComment(form);
+
+      commentCount.value += 1;
+      comments.value.unshift(data.comment);
+
+      comment.value = null;
+    } catch (error) {
+      console.error(error.response?.data.message);
+    }
   };
 </script>

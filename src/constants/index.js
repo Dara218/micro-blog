@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   },
   COMMENT: {
     GET_COMMENTS: id => `api/comment/${id}/get-comments`,
+    CREATE_COMMENT: `api/comment/create`,
   },
   LIKE: {
     POST_LIKE: `api/like/process`,
