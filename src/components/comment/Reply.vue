@@ -16,7 +16,7 @@
         <div class="reply-actions">
           <PostActions
             :authUserId="props.authUserId"
-            :likeCount="reply.like_count || 0"
+            :likeCount="Number(reply.like_count) || 0"
             :postId="reply.id"
             :isLiked="reply.is_liked || false"
             type="comment"

@@ -2,39 +2,24 @@
   <!-- Overlay -->
   <div class="modal-overlay" @click.self="closeModal">
     <!-- Container -->
-    <div class="modal-container" >
-      <!-- Header -->
-      <div class="modal-header"
+    <div class="modal-container relative" >
+      <!-- Floating close button (top-left) -->
+      <div
         tabindex="0"
         ref="modalContainer"
         @keydown.prevent.stop.left="previousImage(postStore, postIndex)"
         @keydown.prevent.stop.right="nextImage(postStore, false, props.media)"
-      >
-        <div class="post-author">
-          <div class="author-avatar">
-            <img :src="props.avatarUrl" :alt="props.avatarUrl" />
-          </div>
-          <div class="author-info">
-            <h4 class="author-name">{{ props.name }}</h4>
-            <p class="post-meta">@janesmith • 2h ago</p>
-          </div>
-        </div>
+      ></div>
+      <button
+        class="modal-close absolute right-3 top-3 z-20"
+        type="button"
+        @click="closeModal">×</button>
 
-        <button
-          class="modal-close"
-          type="button"
-          @click="closeModal">×</button>
-      </div>
-
-      <!-- Body: media left, comments right -->
+      <!-- Body: media left, details right -->
       <div class="post-modal">
-        <div class="post-modal-media">
+        <!-- Left: Media viewer -->
+        <div class="post-modal-media bg-black flex items-center justify-center">
           <div v-if="imageUrls.length || videoUrls.length" class="w-full relative">
-            <!-- Media counter placeholder (positioned top-right) -->
-            <div class="media-counter">
-              {{ postIndex + 1 }}/{{ props.media.length }}
-            </div>
-
             <!-- Navigation arrows - show only if 2+ media items -->
             <button 
               v-if="(props.media || []).length > 1"
@@ -68,7 +53,8 @@
               </svg>
             </button>
 
-            <ZoomImg v-if="imageUrls.length"
+            <ZoomImg
+              v-if="imageUrls.length"
               :src="imageUrls[postIndex]"
               :show-zoom-btns="true"
               zoom-type="drag"
@@ -86,23 +72,41 @@
           </div>
         </div>
 
-        <div class="post-modal-comments">
-          <div class="post-content">
-            <p class="post-text">{{ props.content }}</p>
+        <!-- Right: Details/comments rail -->
+        <div class="post-modal-comments flex flex-col bg-white">
+          <!-- Header: Author + timestamp -->
+          <div class="flex items-center justify-between pb-2 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
+              </div>
+              <div class="leading-tight">
+                <div class="font-semibold text-gray-900">{{ props.name || 'User' }}</div>
+                <div class="text-gray-500 text-xs">• 2h</div>
+              </div>
+            </div>
           </div>
 
-          <!-- Post actions -->
-          <PostActions
-            :authUserId="props.authUserId"
-            :commentCount="commentCount"
-            :likeCount="props.likeCount"
-            :postId="props.postId"
-            :isLiked="props.isLiked"
-            type="post"
-            @like-updated="(likeData) => $emit('like-updated', likeData)"
-          />
+          <!-- Post text/content -->
+          <div class="post-content py-3">
+            <p class="post-text whitespace-pre-line">{{ props.content }}</p>
+          </div>
 
-          <div class="comments-scroll divide-y divide-gray-200">
+          <!-- Actions + counts (like/comment/share) -->
+          <div class="actions-bar py-2">
+            <PostActions
+              :authUserId="props.authUserId"
+              :commentCount="commentCount"
+              :likeCount="props.likeCount"
+              :postId="props.postId"
+              :isLiked="props.isLiked"
+              type="post"
+              @like-updated="(likeData) => $emit('like-updated', likeData)"
+            />
+          </div>
+
+          <!-- Comments list -->
+          <div class="comments-scroll divide-y divide-gray-100">
             <div v-for="comment in localComments" :key="comment.id" class="comment-item flex items-start gap-3 py-3">
               <div class="author-avatar w-9 h-9 rounded-full overflow-hidden shrink-0">
                 <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
@@ -119,14 +123,14 @@
                 <PostActions
                   :authUserId="props.authUserId"
                   :commentCount="commentRepliesCount[comment.id]"
-                  :likeCount="comment.like_count || 0"
+                  :likeCount="Number(comment.like_count) || 0"
                   :postId="comment.id"
                   :isLiked="comment.is_liked || false"
                   type="comment"
                   @like-updated="(likeData) => handleCommentLikeUpdate(comment.id, likeData)"
                 />
                 <!-- Replies section -->
-                <div v-for="reply in comment.replies" :key="reply.id">
+                <div v-for="reply in comment.replies" :key="reply.id" class="ml-10">
                   <Reply
                     :replies="[reply]"
                     :authUserId="props.authUserId"
@@ -137,14 +141,20 @@
             </div>
           </div>
 
-          <div class="comment-input">
-            <textarea 
-              v-model="comment"
-              class="comment-field"
-              type="text"
-              placeholder="Write a comment..."
-            />
-            <button class="btn-create-post" type="button" @click="submitComment">Post</button>
+          <!-- Composer -->
+          <div class="comment-input border-t border-gray-200 pt-2 mt-2 w-full">
+            <div class="flex items-center gap-2 w-full">
+              <div class="w-8 h-8 rounded-full overflow-hidden shrink-0">
+                <img class="w-full h-full object-cover" :src="props.avatarUrl" :alt="props.avatarUrl" />
+              </div>
+              <textarea 
+                v-model="comment"
+                class="comment-field flex-1 w-full"
+                type="text"
+                placeholder="Write a comment..."
+              />
+              <button class="btn-create-post" type="button" @click="submitComment">Post</button>
+            </div>
           </div>
         </div>
       </div>

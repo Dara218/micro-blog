@@ -181,6 +181,12 @@
     min-height: 0;
   }
 
+  /* Post modal action bar (like/comment/share) */
+  .actions-bar {
+    border-top: 0; /* remove extra top divider */
+    border-bottom: 1px solid #e5e7eb; /* light divider under actions */
+  }
+
   .comments-scroll {
     @apply flex-1 overflow-y-auto space-y-4 pr-2;
   }
