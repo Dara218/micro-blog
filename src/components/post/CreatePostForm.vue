@@ -134,6 +134,11 @@
     processPost,
   } = useCreatePost(props.userId);
 
+  /**
+   * Validate and submit a new post; emits the created post on success.
+   *
+   * @returns {void}
+   */
   const onSubmit = async () => {
     serverError.value = '';
 

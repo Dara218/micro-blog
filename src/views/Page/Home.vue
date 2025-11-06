@@ -108,7 +108,13 @@
   const auth = useAuthStore();
   const avatarUrl = computed(() => auth.user.avatar_url || DEFAULT_USER_AVATAR);
   const userId = ref(1);
+  const isCreatePostModalOpen = ref(false);
 
+  /**
+   * Load authenticated user, home posts and user stats on first mount.
+   *
+   * @returns {void}
+   */
   onMounted(async () => {
     try {
       await auth.getAuthenticatedUser();
@@ -127,25 +133,52 @@
     }
   });
 
-  const isCreatePostModalOpen = ref(false);
-
+  /**
+   * Toggle the create post modal; optionally prepend a newly created post.
+   *
+   * @param {Object} [newPost] - Newly created post to insert at the top of the feed.
+   * 
+   * @returns {void}
+   */
   const toggleCreatePostModal = (newPost) => {
     isCreatePostModalOpen.value = !isCreatePostModalOpen.value
 
     if (newPost) prependNewPost(newPost);
   };
-
+  
+  /**
+   * Prepend a new post to the feed.
+   *
+   * @param {Object} newPost - Post object returned from the API.
+   * 
+   * @returns {void}
+   */
   const prependNewPost = (newPost) => homePosts.value.unshift(newPost);
 
+  /**
+   * Update a post's like status and count in the feed.
+   *
+   * @param {{ postId: number, likeCount: number, isLiked: boolean }} likeData - Updated like info.
+   * 
+   * @returns {void}
+   */
   const updatePostLike = (likeData) => {
     const post = homePosts.value.find(p => p.id === likeData.postId);
+
     if (post) {
       post.like_count = likeData.likeCount;
       post.is_liked = likeData.isLiked;
     }
   };
 
-  // Recursive function to update nested replies at any depth
+  /**
+   * Recursively apply like updates to a nested replies tree.
+   *
+   * @param {Array} replies - Replies array (each reply may contain `replies`).
+   * @param {Record<number, { likeCount: number, isLiked: boolean }>} replyData - Map of replyId to like info.
+   * 
+   * @returns {void}
+   */
   const updateNestedReplies = (replies, replyData) => {
     if (!replies || replies.length === 0) return;
     
@@ -162,7 +195,14 @@
       }
     }
   };
-
+  
+  /**
+   * Merge like updates for comments/replies into the relevant post in the feed.
+   *
+   * @param {Record<number, { likeCount: number, isLiked: boolean }>} replyData - Map of comment/reply ID to like info.
+   * 
+   * @returns {void}
+   */
   const updateReplyLike = (replyData) => {
     // Find the post that contains the updated comment or reply
     for (const post of homePosts.value) {

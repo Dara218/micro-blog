@@ -16,7 +16,7 @@
       </svg>
       <span>{{ likeCount }}</span>
     </button>
-    <button class="action-btn">
+    <button class="action-btn" @click="openPostModal">
       <svg
         class="w-5 h-5"
         fill="none"
@@ -53,7 +53,7 @@
   import { ref, watch } from 'vue';
   import { useLikePost } from '@/composables/useLikePost';
 
-  const emit = defineEmits(['like-updated']);
+  const emit = defineEmits(['like-updated', 'open-post-modal']);
 
   const props = defineProps({
     authUserId: { type: Number },
@@ -76,6 +76,12 @@
     isLiked.value = newVal;
   }, { immediate: true });
 
+  /**
+   * Optimistically toggle like status and persist to backend.
+   * Emits updated like info on success; reverts on error.
+   *
+   * @returns {void}
+   */
   const toggleLike = async () => {
     const originalLikeCount = likeCount.value;
     const originalLikeStatus = isLiked.value;
@@ -99,4 +105,6 @@
       isLiked.value = originalLikeStatus;
     }
   };
+
+  const openPostModal = () => emit('open-post-modal');
 </script>

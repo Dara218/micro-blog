@@ -47,7 +47,7 @@
       :postId="props.postId"
       :isLiked="props.isLiked"
       @like-updated="(likeData) => $emit('like-updated', likeData)"
-      @click="openPostModal"
+      @open-post-modal="openPostModal"
     />
 
     <PostCardModal v-if="isOpenPostModal"
@@ -60,7 +60,7 @@
       :likeCount="props.likeCount"
       :postId="props.postId"
       :isLiked="props.isLiked"
-      :hasMedia="false"
+      :hasMedia="props.media && props.media.length > 0"
       @close="openPostModal()"
     />
   </article>
@@ -99,7 +99,25 @@
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
 
+  /**
+   * Toggle the post modal that shows the full post details.
+   *
+   * @returns {void}
+   */
   const openPostModal = () => {
     isOpenPostModal.value =! isOpenPostModal.value;
   };
+
+  /**
+   * Build a normalized media list for the modal (images first, then videos).
+   * Each item is an object with a `url` used by the modal's media partitioner.
+   *
+   * @returns {{ url: string }[]} Array of media objects ready for PostCardModal
+   */
+  const mediaForModal = computed(() => {
+    return [
+      ...((imageUrls.value || []).map(url => ({ url }))),
+      ...((videoUrls.value || []).map(url => ({ url }))),
+    ];
+  });
 </script>

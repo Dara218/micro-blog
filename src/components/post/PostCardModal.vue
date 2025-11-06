@@ -165,9 +165,6 @@
 <script setup>
   /**
    * Todo:
-   * - When clicking the reply button, open the modal | DONE
-   * - When clicking the reply button on post without media, show the post on modal
-   *   Current: Nothing happens
    * - Add loading/limit so 10 comments is posted 1st. When reached the bottom upon scrolling, load 10 more
    */
   import { computed, onMounted, ref } from 'vue';
@@ -211,7 +208,13 @@
   const modalContainer = ref(null);
   const commentRepliesCount = ref({});
 
-  // Recursive function to update reply likes at any nesting level
+  /**
+   * Recursively apply like state updates to a nested replies array.
+   *
+   * @param {Array} replies - List of reply objects, each may contain nested `replies`.
+   *
+   * @returns {void}
+   */
   const updateReplyLikes = (replies) => {
     if (!replies || replies.length === 0) return;
     
@@ -229,7 +232,18 @@
     }
   };
 
-  // Computed property that merges props.comments with comment and reply like updates
+  /**
+   * Comments merged with in-session like updates for comments and replies.
+   * Deep-clones source to avoid mutating props, then applies pending like changes.
+   *
+   * @returns {Array<{
+   *   id: number,
+   *   content: string,
+   *   like_count: number,
+   *   is_liked: boolean,
+   *   replies?: Array<any>
+   * }>} Updated comments array safe for rendering
+   */
   const localComments = computed(() => {
     if (!comments.value || comments.value.length === 0) return [];
     
@@ -255,13 +269,18 @@
 
   onMounted(async () => {
     modalContainer.value?.focus();
-    await getLikeInfo();
+    getLikeInfo();
   });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
 
+  /**
+   * Fetch latest like status and count for the current post/user.
+   *
+   * @returns {void}
+   */
   const getLikeInfo = async () => {
     try {
       const { data } = await useGetLikeInfo(props.postId, props.authUserId);
@@ -277,6 +296,14 @@
     }
   };
 
+  /**
+   * Handle like status updates for a top-level comment.
+   *
+   * @param {number} commentId - The comment identifier.
+   * @param {{ likeCount: number, isLiked: boolean }} likeData - Updated like info.
+   *
+   * @returns {void}
+   */
   const handleCommentLikeUpdate = (commentId, likeData) => {
     // Store comment like updates - the computed property will merge these
     replyLikeUpdates.value[commentId] = {
@@ -285,6 +312,13 @@
     };
   };
 
+  /**
+   * Handle like status updates for a nested reply.
+   *
+   * @param {{ replyId: number, likeCount: number, isLiked: boolean }} likeData - Updated like info for the reply.
+   *
+   * @returns {void}
+   */
   const handleReplyLikeUpdate = (likeData) => {
     // Store reply like updates - the computed property will merge these with props.comments
     replyLikeUpdates.value[likeData.replyId] = {
@@ -293,6 +327,11 @@
     };
   };
 
+  /**
+   * Close the modal and emit any pending like state changes to the parent.
+   *
+   * @returns {void}
+   */
   const closeModal = () => {
     if (hasLikeChanged.value) {
       emit('like-updated', {
@@ -310,6 +349,11 @@
     emit('close');
   };
 
+  /**
+   * Create a new comment for the current post and prepend it to the list.
+   *
+   * @returns {void}
+   */
   const submitComment = async () => {
     try {
       const form = buildPostFormData({

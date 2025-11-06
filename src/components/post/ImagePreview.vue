@@ -232,6 +232,11 @@
   defineEmits(['like-updated', 'reply-like-updated']);
 
   const postStore = usePostStore();
+  /**
+   * Current media index used by the preview and modal.
+   *
+   * @returns {number}
+   */
   const index = computed({
     get: () => postStore.postPreviewIndex,
     set: (val) => postStore.getPostPreviewIndex(val),
@@ -255,13 +260,24 @@
   const modalContainer = ref(null);
   const isOpenPostModal = ref(false);
 
+  /**
+   * Normalize media items to usable URLs depending on source.
+   *
+   * @param {Array<File|string>} mediaType - Files or URL strings.
+   * @param {boolean} isUrl - True if items are already URLs.
+   * @returns {string[]} Array of resolved URLs.
+   */
   const mediaUrls = ((mediaType, isUrl) => isUrl
     ? mediaType
     : mediaType.map(file => useCreateObjectUrl(file))
   );
   const videoUrls = computed(() => mediaUrls(props.videos, props.isUrl));
 
-  // Prepare media objects for the modal in a single place
+  /**
+   * Build a flat media descriptor list for the modal (images first, then videos).
+   *
+   * @returns {{ url: string }[]} Array of media objects with `url`.
+   */
   const mediaForModal = computed(() => {
     const toUrl = (item) => (props.isUrl ? item : useCreateObjectUrl(item));
     const images = (props.images || []).map(toUrl).map(url => ({ url }));
@@ -270,7 +286,11 @@
     return [...images, ...videos];
   });
 
-  // Get current media based on the selected index
+  /**
+   * Resolve the currently selected media source (image or video URL).
+   *
+   * @returns {string|null}
+   */
   const currentMediaSrc = computed(() => {
     const imageCount = props.images ? props.images.length : 0;
     
@@ -291,18 +311,33 @@
     return null;
   });
 
+  /**
+   * Whether the current index points to an image.
+   *
+   * @returns {boolean}
+   */
   const currentMediaIsImage = computed(() => {
     const imageCount = props.images ? props.images.length : 0;
 
     return index.value < imageCount && props.images;
   });
 
+  /**
+   * Whether the current index points to a video.
+   *
+   * @returns {boolean}
+   */
   const currentMediaIsVideo = computed(() => {
     const imageCount = props.images ? props.images.length : 0;
 
     return index.value >= imageCount && props.videos;
   });
 
+  /**
+   * Responsive modal sizing rules based on total media count.
+   *
+   * @returns {Record<string, string>} Inline style object for the modal container.
+   */
   const modalStyles = computed(() => {
     const totalMedia = (props.images?.length || 0) + (props.videos?.length || 0);
     
@@ -316,17 +351,24 @@
       return {
         maxWidth: '85vw',
         maxHeight: '80vh',
-        margin: '1.5rem'
+        margin: '1.5rem',
       };
     } else {
       return {
         maxWidth: '90vw',
         maxHeight: '75vh',
-        margin: '1rem'
+        margin: '1rem',
       };
     }
   });
 
+  /**
+   * Toggle the media modal; optionally set the initial media index.
+   *
+   * @param {number} [index] - Optional media index to open at.
+   *
+   * @returns {void}
+   */
   const openPostModal = (index) => {
     // Only update index if provided (when opening modal)
     if (index !== undefined) postStore.getPostPreviewIndex(index);
