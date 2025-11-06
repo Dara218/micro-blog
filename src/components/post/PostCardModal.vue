@@ -2,7 +2,7 @@
   <!-- Overlay -->
   <div class="modal-overlay" @click.self="closeModal">
     <!-- Container -->
-    <div class="modal-container relative" >
+    <div :class="['modal-container', 'relative', props.hasMedia ? 'has-media' : 'no-media']" >
       <!-- Floating close button (top-left) -->
       <div
         tabindex="0"
@@ -16,9 +16,9 @@
         @click="closeModal">×</button>
 
       <!-- Body: media left, details right -->
-      <div class="post-modal">
+      <div :class="props.hasMedia ? 'post-modal' : ''">
         <!-- Left: Media viewer -->
-        <div class="post-modal-media bg-black flex items-center justify-center">
+        <div class="post-modal-media bg-black flex items-center justify-center" v-if="props.hasMedia">
           <div v-if="imageUrls.length || videoUrls.length" class="w-full relative">
             <!-- Navigation arrows - show only if 2+ media items -->
             <button 
@@ -163,6 +163,13 @@
 </template>
 
 <script setup>
+  /**
+   * Todo:
+   * - When clicking the reply button, open the modal | DONE
+   * - When clicking the reply button on post without media, show the post on modal
+   *   Current: Nothing happens
+   * - Add loading/limit so 10 comments is posted 1st. When reached the bottom upon scrolling, load 10 more
+   */
   import { computed, onMounted, ref } from 'vue';
   import { DEFAULT_USER_AVATAR } from '@/constants';
   import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
@@ -185,6 +192,7 @@
     postId: { type: Number, default: 0 },
     isLiked: { type: Boolean, default: false },
     likeCount: { type: Number, default: 0 },
+    hasMedia: { type: Boolean, default: false }
   });
 
   const latestLikeStatus = ref(false);
@@ -193,7 +201,7 @@
   const replyLikeUpdates = ref({});
   const comment = ref(null);
   const comments = ref(props.comments);
-  const commentCount = ref(comments.value.length);
+  const commentCount = computed(() => comments.value.length);
 
   const postStore = usePostStore();
   const postIndex = computed({
@@ -313,7 +321,6 @@
 
       const { data } = await createComment(form);
 
-      commentCount.value += 1;
       comments.value.unshift(data.comment);
 
       comment.value = null;

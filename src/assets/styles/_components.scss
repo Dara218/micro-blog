@@ -144,6 +144,11 @@
     /* Wider default width for post modal while keeping margins */
     max-width: min(96vw, 1200px);
 
+    /* When there is no media, use a narrower max-width */
+    &.no-media {
+      max-width: 800px;
+    }
+
     img, video {
       @apply max-w-full object-contain mx-auto;
       max-height: min(80vh, 600px);

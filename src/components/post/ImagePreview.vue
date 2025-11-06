@@ -214,6 +214,7 @@
     :likeCount="props.likeCount"
     :postId="props.postId"
     :isLiked="props.isLiked"
+    :hasMedia="true"
     @close="openPostModal()"
     @like-updated="(likeData) => $emit('like-updated', likeData)"
     @reply-like-updated="(replyData) => $emit('reply-like-updated', replyData)"

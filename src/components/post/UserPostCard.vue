@@ -47,6 +47,21 @@
       :postId="props.postId"
       :isLiked="props.isLiked"
       @like-updated="(likeData) => $emit('like-updated', likeData)"
+      @click="openPostModal"
+    />
+
+    <PostCardModal v-if="isOpenPostModal"
+      :authUserId="props.authUserId"
+      :avatarUrl="props.avatarUrl"
+      :name="props.name"
+      :content="props.content"
+      :media="mediaForModal"
+      :comments="props.comments"
+      :likeCount="props.likeCount"
+      :postId="props.postId"
+      :isLiked="props.isLiked"
+      :hasMedia="false"
+      @close="openPostModal()"
     />
   </article>
 </template>
@@ -57,6 +72,7 @@
   import { usePartitionMedia, useConvertMediaToUrl } from '@/helpers/filterMedia';
   import ImagePreview from './ImagePreview.vue';
   import PostActions from './PostActions.vue';
+  import PostCardModal from './PostCardModal.vue';
 
   defineEmits(['like-updated', 'reply-like-updated']);
 
@@ -75,10 +91,15 @@
     isLiked: { type: Boolean, default: false },
   });
   const isOwnPost = ref(false);
+  const isOpenPostModal = ref(false);
 
   onMounted(() => isOwnPost.value = props.authUserId === props.postUserId);
 
   const parts = computed(() => usePartitionMedia(props.media));
   const imageUrls = computed(() => useConvertMediaToUrl(parts.value.images));
   const videoUrls = computed(() => useConvertMediaToUrl(parts.value.videos));
+
+  const openPostModal = () => {
+    isOpenPostModal.value =! isOpenPostModal.value;
+  };
 </script>
