@@ -269,7 +269,7 @@
 
   onMounted(async () => {
     modalContainer.value?.focus();
-    getLikeInfo();
+    await getLikeInfo();
   });
 
   const parts = computed(() => usePartitionMedia(props.media || []));
